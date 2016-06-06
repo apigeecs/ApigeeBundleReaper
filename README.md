@@ -19,13 +19,13 @@ The only prerequisites not handled during the installation are a functional Node
 	
 Clone the bundle-reaper repository to your local machine:
 
-	ApigeeCorporation$ git clone https://github.com/ssvaidyanathan/bundle-reaper.git
+	ApigeeCorporation$ git clone https://github.com/apigeecs/ApigeeBundleReaper.git
 
 Alternatively you can download the zip file via the GitHub home page and unzip the archive.
 
 Navigate to the package directory:
 
-	ApigeeCorporation$ cd path/to/bundle-reaper/src/package/
+	ApigeeCorporation$ cd path/to/ApigeeBundleReaper/src/package/
 
 Install npm modules:
 
