@@ -6,7 +6,7 @@ var _ = require("lodash");
 var mgmtAPIConfigurations = {
 	host: "api.enterprise.apigee.com",
 	version: "v1"
-}
+};
 
 var properties = [
   {
@@ -49,14 +49,6 @@ function print(msg) {
         console.log(error); 
     } 
 } 
- 
-function debugPrint(msg) { 
-    if (config.debug) { 
-        print(msg); 
-    } 
-} 
-
-
 
 function getTraffic(result, allApis, env){
   var toDate = new Date();
@@ -89,7 +81,7 @@ function getTraffic(result, allApis, env){
             if(dimensions!=null && dimensions.length>0){
               dimensions.forEach(function(dimension) {
                 calledApis.push(dimension.name);
-              })
+              });
             }
           })
         var unusedApis = _.difference(allApis, calledApis);
@@ -205,38 +197,38 @@ function onErr(err) {
 prompt.start();
 
 prompt.get(properties, function (err, result) {
-  if (err) { 
+  if(err) 
   	return onErr(err); 
-  } else {
-      //Fetch env info from org
-      var data = "";
-      var envs = [];
-      var options = {
-          host: "api.enterprise.apigee.com",
-          port: 443,
-          path: "/"+mgmtAPIConfigurations.version+"/organizations/"+result.org+"/environments",
-          method: "GET",
-          headers: {
-              Accept: "application/json",
-              Authorization: "Basic " + (new Buffer(result.orgUserName + ":" + result.orgUserPwd)).toString("base64")
-          }
-      };
+  else{
+        //Fetch env info from org
+        var data = "";
+        var envs = [];
+        var options = {
+            host: "api.enterprise.apigee.com",
+            port: 443,
+            path: "/"+mgmtAPIConfigurations.version+"/organizations/"+result.org+"/environments",
+            method: "GET",
+            headers: {
+                Accept: "application/json",
+                Authorization: "Basic " + (new Buffer(result.orgUserName + ":" + result.orgUserPwd)).toString("base64")
+            }
+        };
 
-      var req = https.request(options, function(res) {
-        res.on("data", function(d) {
-            data += d;
-        });
-        res.on("end", function() {
-          //Nothing to do
-          envs = JSON.parse(data);
-          getAllAPIs(result, envs);
-        });
-    });
+        var req = https.request(options, function(res) {
+          res.on("data", function(d) {
+              data += d;
+          });
+          res.on("end", function() {
+            //Nothing to do
+            envs = JSON.parse(data);
+            getAllAPIs(result, envs);
+          });
+      });
 
-    req.on("error", function(e) {
-        console.error(e);
-    });
-    
-    req.end();
-  }
+      req.on("error", function(e) {
+          console.error(e);
+      });
+      
+      req.end();
+    }
 });

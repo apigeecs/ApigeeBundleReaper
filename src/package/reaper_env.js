@@ -6,7 +6,7 @@ var _ = require("lodash");
 var mgmtAPIConfigurations = {
 	host: "api.enterprise.apigee.com",
 	version: "v1"
-}
+};
 
 var properties = [
   {
@@ -88,7 +88,7 @@ function getTraffic(result, allApis){
             if(dimensions!=null && dimensions.length>0){
               dimensions.forEach(function(dimension) {
                 calledApis.push(dimension.name);
-              })
+              });
             }
           })
         var unusedApis = _.difference(allApis, calledApis);
@@ -201,10 +201,8 @@ function printInfo(result) {
 prompt.start();
 
 prompt.get(properties, function (err, result) {
-  if (err) { 
+  if(err)
   	return onErr(err); 
-  } else {
-  	//printInfo(result);
+  else
     getAllAPIs(result);
-  }
 });
