@@ -83,7 +83,7 @@ function getTraffic(result, allApis, env){
                 calledApis.push(dimension.name);
               });
             }
-          })
+          });
         var unusedApis = _.difference(allApis, calledApis);
         if(unusedApis!=null && unusedApis.length > 0){
           print("--------------APIs with No Traffic in "+env+" in the last "+result.axDays+" days---------------");
@@ -197,8 +197,9 @@ function onErr(err) {
 prompt.start();
 
 prompt.get(properties, function (err, result) {
-  if(err) 
+  if(err){
   	return onErr(err); 
+  }
   else{
         //Fetch env info from org
         var data = "";
