@@ -197,9 +197,7 @@ function onErr(err) {
 prompt.start();
 
 prompt.get(properties, function (err, result) {
-  if(err){
-  	return onErr(err); 
-  }
+  if(err){return onErr(err);}
   else{
         //Fetch env info from org
         var data = "";

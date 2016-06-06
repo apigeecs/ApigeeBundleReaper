@@ -201,9 +201,7 @@ function printInfo(result) {
 prompt.start();
 
 prompt.get(properties, function (err, result) {
-  if(err){
-  	return onErr(err); 
-  }
+  if(err){return onErr(err);}
   else{
     getAllAPIs(result);
   }
