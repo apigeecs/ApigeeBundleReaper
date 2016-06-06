@@ -1,83 +1,57 @@
-var prompt = require('prompt');
-var request = require('request');
+var prompt = require("prompt");
+var request = require("request");
 var https = require("https");
-var _ = require('lodash');
+var _ = require("lodash");
 
   var mgmtAPIConfigurations = {
-  	host: 'api.enterprise.apigee.com',
-  	version: 'v1'
+  	host: "api.enterprise.apigee.com",
+  	version: "v1"
   }
 
   var properties = [
     {
-      description: 'Please provide Org Name',
-      name: 'org',
+      description: "Please provide Org Name",
+      name: "org",
       required: true,
-      message: 'Must not be empty'
+      message: "Must not be empty"
     },
     {
-      description: 'Please provide Env Name',
-      name: 'env',
+      description: "Please provide Env Name",
+      name: "env",
       required: true,
-      default: 'test',
-      message: 'Must not be empty'
+      default: "test",
+      message: "Must not be empty"
     },
     {
-      description: 'Please provide number of days',
-      name: 'axDays',
-      type: 'integer',
+      description: "Please provide number of days",
+      name: "axDays",
+      type: "integer",
       required: true,
       default: 90,
-      message: 'Must not be empty and must be a Number'
+      message: "Must not be empty and must be a Number"
     },
     {
-      description: 'Please provide Org User ID',
-      name: 'orgUserName',
+      description: "Please provide Org User ID",
+      name: "orgUserName",
       required: true,
-      message: 'Must not be empty'
+      message: "Must not be empty"
     },
     {
-      description: 'Please provide Org User Password',
-      name: 'orgUserPwd',
+      description: "Please provide Org User Password",
+      name: "orgUserPwd",
       required: true,
       hidden: true,
-      message: 'Must not be empty'
+      message: "Must not be empty"
     }
   ];
 
-  prompt.start();
-
-  prompt.get(properties, function (err, result) {
-    if (err) { 
-    	return onErr(err); 
-    } else {
-    	//printInfo(result);
-      getAllAPIs(result);
-    }
-  });
-
-  function onErr(err) {
-    console.log(err);
-    return -1;
-   }
-
-  function printInfo(result) {
-    console.log('Command-line input received:');
-    console.log('  Org: ' + result.org);
-    console.log('  Env: ' + result.env);
-    console.log('  AX Days: ' + result.axDays);
-    console.log('  Username: ' + result.orgUserName);
-    console.log('  Password: ' + result.orgUserPwd);
-    return 1;
-  }
-
   function getAllAPIs(result){
-  	var data = "";
+    var data = "";
 
-  	var options = {
+    var options = {
         host: "api.enterprise.apigee.com",
         port: 443,
-        path: '/'+mgmtAPIConfigurations.version+'/organizations/'+result.org+'/apis',
+        path: "/"+mgmtAPIConfigurations.version+"/organizations/"+result.org+"/apis",
         method: "GET",
         headers: {
             Accept: "application/json",
@@ -90,7 +64,7 @@ var _ = require('lodash');
             data += d;
         });
         res.on("end", function() {
-        	//Nothing to do
+          //Nothing to do
           var allApis = JSON.parse(data);
           getDeployedAPIs(result, allApis);
         });
@@ -110,7 +84,7 @@ var _ = require('lodash');
     var options = {
         host: "api.enterprise.apigee.com",
         port: 443,
-        path: '/'+mgmtAPIConfigurations.version+'/organizations/'+result.org+'/environments/'+result.env+'/deployments',
+        path: "/"+mgmtAPIConfigurations.version+"/organizations/"+result.org+"/environments/"+result.env+"/deployments",
         method: "GET",
         headers: {
             Accept: "application/json",
@@ -130,11 +104,11 @@ var _ = require('lodash');
           }
           var undeployedApis = _.difference(allApis, deployedApis);
           if(undeployedApis!==null && undeployedApis.length > 0){
-            console.log('-------------------------Undeployed APIs in '+result.env+'-----------------------------');
+            console.log("-------------------------Undeployed APIs in "+result.env+"-----------------------------");
             undeployedApis.forEach(function(api) {
               console.log(api);
             });
-            console.log('-----------------------------------------------------------------------------');
+            console.log("-----------------------------------------------------------------------------");
           }
           getTraffic(result, allApis);
         });
@@ -147,17 +121,17 @@ var _ = require('lodash');
 
   function getTraffic(result, allApis){
     var toDate = new Date();
-    var formattedToDate = (toDate.getMonth()+1)+'/'+toDate.getDate()+'/'+toDate.getFullYear()+'%2000:00';//MM/DD/YYYY%20HH:MM
+    var formattedToDate = (toDate.getMonth()+1)+"/"+toDate.getDate()+"/"+toDate.getFullYear()+"%2000:00";//MM/DD/YYYY%20HH:MM
     //console.log(formattedToDate);
     var fromDate = new Date(toDate - (result.axDays*24*3600*1000));
-    var formattedFromDate = (fromDate.getMonth()+1)+'/'+fromDate.getDate()+'/'+fromDate.getFullYear()+'%2000:00';//MM/DD/YYYY%20HH:MM
+    var formattedFromDate = (fromDate.getMonth()+1)+"/"+fromDate.getDate()+"/"+fromDate.getFullYear()+"%2000:00";//MM/DD/YYYY%20HH:MM
     //  console.log(formattedFromDate);
     var data = "";
     var calledApis = [];
     var options = {
         host: "api.enterprise.apigee.com",
         port: 443,
-        path: '/'+mgmtAPIConfigurations.version+'/organizations/'+result.org+'/environments/'+result.env+'/stats/apis?select=sum(message_count)&timeUnit=day&timeRange='+formattedFromDate+'~'+formattedToDate,
+        path: "/"+mgmtAPIConfigurations.version+"/organizations/"+result.org+"/environments/"+result.env+"/stats/apis?select=sum(message_count)&timeUnit=day&timeRange="+formattedFromDate+"~"+formattedToDate,
         method: "GET",
         headers: {
             Accept: "application/json",
@@ -181,11 +155,11 @@ var _ = require('lodash');
             })
           var unusedApis = _.difference(allApis, calledApis);
           if(unusedApis!=null && unusedApis.length > 0){
-            console.log('--------------APIs with No Traffic in '+result.env+' in the last '+result.axDays+' days---------------');
+            console.log("--------------APIs with No Traffic in "+result.env+" in the last "+result.axDays+" days---------------");
             unusedApis.forEach(function(api) {
               console.log(api);
             });
-            console.log('-----------------------------------------------------------------------------');
+            console.log("-----------------------------------------------------------------------------");
           }
         });
     });
@@ -194,4 +168,31 @@ var _ = require('lodash');
     });
     req.end();
 
+  }
+
+
+  prompt.start();
+
+  prompt.get(properties, function (err, result) {
+    if (err) { 
+    	return onErr(err); 
+    } else {
+    	//printInfo(result);
+      getAllAPIs(result);
+    }
+  });
+
+  function onErr(err) {
+    console.log(err);
+    return -1;
+   }
+
+  function printInfo(result) {
+    console.log("Command-line input received:");
+    console.log("  Org: " + result.org);
+    console.log("  Env: " + result.env);
+    console.log("  AX Days: " + result.axDays);
+    console.log("  Username: " + result.orgUserName);
+    console.log("  Password: " + result.orgUserPwd);
+    return 1;
   }
