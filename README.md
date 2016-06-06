@@ -1,7 +1,7 @@
 ApigeeBundleReaper
 ===================
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1b97b10c886646c3b761bcb4559e5bf8)](https://www.codacy.com/app/ApigeeCS/ApigeeBundleReaper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=apigeecs/ApigeeBundleReaper&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3ce632f7aa6b417983c464fc3cb99c71)](https://www.codacy.com/app/ssvaidyanathan/ApigeeBundleReaper?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=apigeecs/ApigeeBundleReaper&amp;utm_campaign=Badge_Grade)
 
 Tool to faciliate Apigee Edge Organization maintenance
 
