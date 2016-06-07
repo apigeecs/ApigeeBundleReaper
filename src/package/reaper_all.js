@@ -1,4 +1,5 @@
 var prompt = require("prompt");
+var colors = require("colors/safe");
 var request = require("request");
 var https = require("https");
 var _ = require("lodash");
