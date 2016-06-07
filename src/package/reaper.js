@@ -143,7 +143,7 @@ function getDeployedAPIs(result, allApis, env){
           data += d;
       });
       res.on("end", function() {
-        if(res.statusCode == 200){
+        if(res.statusCode === 200){
           //console.log(JSON.parse(data).aPIProxy.length);
           var apiProxies = JSON.parse(data).aPIProxy;
           var deployedApis = [];
@@ -239,7 +239,7 @@ prompt.get(properties, function (err, result) {
         //Fetch env info from org
         var data = "";
         var envs = [];
-        if(result.env != null && result.env == "all"){
+        if(result.env !== null && result.env === "all"){
           console.log("Getting All environments for "+ result.org);
           var options = {
             host: result.mgmtApiHost,
