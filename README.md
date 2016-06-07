@@ -33,10 +33,12 @@ Install npm modules:
 
 ## Usage
 	
-	ApigeeCorporation$ node reaper_env.js
+	ApigeeCorporation$ node reaper.js
+	prompt: Please provide Management API Host:  (api.enterprise.apigee.com)
+	prompt: Please provide Management API Version:  (v1)
 	prompt: Please provide Org Name:  saisarantest
-	prompt: Please provide Env Name:  (test) test
-	prompt: Please provide number of days:  (90) 90
+	prompt: Please provide Env Name - all | <env>:  (test)
+	prompt: Please provide number of days:  (90) 
 	prompt: Please provide Org User ID:  ssvaidyanathan@apigee.com
 	prompt: Please provide Org User Password:
 	
@@ -61,11 +63,14 @@ Install npm modules:
 	oauth-client-credentials
 	-----------------------------------------------------------------------------
 
-Similarly for reaper_all.js
+Similarly for all environments for a given organization
 	
-	ApigeeCorporation$ node reaper_all.js
+	ApigeeCorporation$ node reaper.js
+	prompt: Please provide Management API Host:  (api.enterprise.apigee.com)
+	prompt: Please provide Management API Version:  (v1)
 	prompt: Please provide Org Name:  saisarantest
-	prompt: Please provide number of days:  (90) 90
+	prompt: Please provide Env Name - all | <env>:  (test) all
+	prompt: Please provide number of days:  (90) 
 	prompt: Please provide Org User ID:  ssvaidyanathan@apigee.com
 	prompt: Please provide Org User Password:
 	
