@@ -10,31 +10,31 @@ var mgmtAPIConfigurations = {
 
 var properties = [
   {
-    description: "Please provide Org Name",
+    description: colors.green("Please provide Org Name"),
     name: "org",
     required: true,
-    message: "Must not be empty"
+    message: colors.red("Must not be empty")
   },
   {
-    description: "Please provide number of days",
+    description: colors.green("Please provide number of days"),
     name: "axDays",
     type: "integer",
     required: true,
     default: 90,
-    message: "Must not be empty and must be a Number"
+    message: colors.red("Must not be empty and must be a Number")
   },
   {
-    description: "Please provide Org User ID",
+    description: colors.green("Please provide Org User ID"),
     name: "orgUserName",
     required: true,
-    message: "Must not be empty"
+    message: colors.red("Must not be empty")
   },
   {
-    description: "Please provide Org User Password",
+    description: colors.green("Please provide Org User Password"),
     name: "orgUserPwd",
     required: true,
     hidden: true,
-    message: "Must not be empty"
+    message: colors.red("Must not be empty")
   }
 ];
 
