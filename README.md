@@ -89,5 +89,5 @@ You can also run
     	-h, --host <host>                    Please provide Management API Host Information [api.enterprise.apigee.com]
     	-o, --organization <organization>    Please provide the Edge Organization Name
     	-e, --environment <environment>      Please provide the Environment name [all | test]
-	-a, --authorization <authorization>  Please provide the Edge Basic auth credentials [Basic <auth>]
-	-d, --axDays <axDays>                Please provide the number of days for Traffic
+    	-a, --authorization <authorization>  Please provide the Edge Basic auth credentials [Basic <auth>]
+    	-d, --axDays <axDays>                Please provide the number of days for Traffic
