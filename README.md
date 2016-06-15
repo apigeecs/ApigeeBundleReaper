@@ -42,15 +42,6 @@ Install npm modules:
 	-a is the Basic auth
 	-d is the number of days for which the traffic needs to be fetched
 	
-	ApigeeCorporation$ node reaper.js
-	prompt: Please provide Management API Host:  (api.enterprise.apigee.com)
-	prompt: Please provide Management API Version:  (v1)
-	prompt: Please provide Org Name:  saisarantest
-	prompt: Please provide Env Name - all | <env>:  (test) all
-	prompt: Please provide number of days:  (90) 
-	prompt: Please provide Org User ID:  ssvaidyanathan@apigee.com
-	prompt: Please provide Org User Password:
-	
 	Output:
 	-------------------------Undeployed APIs in test-----------------------------
 	oauth10a-3legged
