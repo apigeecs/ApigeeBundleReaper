@@ -50,7 +50,7 @@ if(!flag){
 proxyStatus.exportAPITrafficStatus({
     host: program.host, //api.enterprise.apigee.com
     org:  program.organization, //saisarantest
-    auth: program.authorization, //"Basic c3N2YWlkeWFuYXRoYW5AYXBpZ2VlLmNvbTpUZWphczE4MDEyMDEy",
+    auth: program.authorization, //"Basic <auth>",
     env:  program.environment, //all|<valid env>
     axDays: program.axDays //90
 });
@@ -59,6 +59,6 @@ proxyStatus.exportAPITrafficStatus({
 proxyStatus.exportAPIDeploymentStatus({
     host: program.host, //api.enterprise.apigee.com
     org:  program.organization, //saisarantest
-    auth: program.authorization, //"Basic c3N2YWlkeWFuYXRoYW5AYXBpZ2VlLmNvbTpUZWphczE4MDEyMDEy",
+    auth: program.authorization, //"Basic <auth>",
     env:  program.environment, //all
 });
