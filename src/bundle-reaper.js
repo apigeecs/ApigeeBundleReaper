@@ -12,23 +12,23 @@ program
   .parse(process.argv);
 
 var flag = true;
-if(program.host === undefined || program.host === true){
+if(typeof program.host === undefined || program.host === true){
 	console.log(colors.red("Please provide Management API Host Information [api.enterprise.apigee.com]"));
 	flag = false;
 }
-if(program.organization === undefined || program.organization === true){
+if(typeof program.organization === undefined || program.organization === true){
 	console.log(colors.red("Please provide the Edge Organization Name"));
 	flag = false;
 }
-if(program.environment === undefined || program.environment === true){
+if(typeof program.environment === undefined || program.environment === true){
 	console.log(colors.red("Please provide the Environment name [all | test]"));
 	flag = false;
 }
-if(program.authorization === undefined || program.authorization === true){
+if(typeof program.authorization === undefined || program.authorization === true){
 	console.log(colors.red("Please provide the Edge Basic auth credentials [Basic <auth>]"));
 	flag = false;
 }
-if(program.axDays === undefined || program.axDays === true){
+if(typeof program.axDays === undefined || program.axDays === true){
 	console.log(colors.red("Please provide the number of days for Traffic"));
 	flag = false;
 }

@@ -125,9 +125,9 @@ var exportAPIDeploymentStatus = function(aConfig){
         //allDeployedAPIs[i].apis.all = allAPIs;
         if(allDeployedAPIs[i].apis.undeployed!==null && allDeployedAPIs[i].apis.undeployed.length>0){
           console.log("-------------------------Undeployed APIs in "+allDeployedAPIs[i].env+"-----------------------------");
-          allDeployedAPIs[i].apis.undeployed.forEach(function(api) {
-            console.log(api);
-          });
+          for (var j = allDeployedAPIs[i].apis.undeployed.length - 1; j >= 0; j--) {
+              console.log(allDeployedAPIs[i].apis.undeployed[j]);
+            }
           console.log("-----------------------------------------------------------------------------");
         }
       }
@@ -164,9 +164,9 @@ var exportAPITrafficStatus = function(aConfig){
         }
         if(allTrafficAPIs[i].apis.noTraffic!==null && allTrafficAPIs[i].apis.noTraffic.length>0){
             console.log("--------------APIs with No Traffic in "+allTrafficAPIs[i].env+" in the last "+aConfig.axDays+" days---------------");
-            allTrafficAPIs[i].apis.noTraffic.forEach(function(api) {
-            console.log(api);
-          });
+            for (var j = allTrafficAPIs[i].apis.noTraffic.length - 1; j >= 0; j--) {
+              console.log(allTrafficAPIs[i].apis.noTraffic[j]);
+            }
           console.log("-----------------------------------------------------------------------------");
         }
       }
