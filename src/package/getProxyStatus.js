@@ -2,7 +2,7 @@ var request = require("request");
 var https = require("https");
 var _ = require("lodash");
 var fs = require("fs");
-var jsonfile = require('jsonfile');
+var jsonfile = require("jsonfile");
 
 //Call Mgmt API
 function getMgmtAPI(host, path, auth){
@@ -41,7 +41,7 @@ function getMgmtAPI(host, path, auth){
 
 //Get Environments from Org
 function getOrgEnvs(host, org, auth, env){
-  if(env == "all"){
+  if(env === "all"){
     return getMgmtAPI(host, "/v1/o/"+org+"/e", auth);
   }
   else{
@@ -71,7 +71,7 @@ function getDeployedAPIs(host, org, auth, env){
       deployedApis.apis.deployed = apis;
       return deployedApis;
   })
-  .catch(function(e){console.log("Catch handler 4" + e); return e});
+  .catch(function(e){console.log("Catch handler 4" + e); return e;});
 }
 
 //Get Traffic for each environment
@@ -126,14 +126,14 @@ var exportAPIDeploymentStatus = function(aConfig){
       }
       return allDeployedAPIs;
     })
-    .catch(function(e){console.log("Catch handler 2" + e); return e});
+    .catch(function(e){console.log("Catch handler 2" + e); return e;});
   })
   .then(function (allAPIStatusInfo){
     exportToFile(allAPIStatusInfo, "api-deployment-status");
     return allAPIStatusInfo;
   })
-  .catch(function(e){console.log("Catch handler 3" + e); return e});
-}
+  .catch(function(e){console.log("Catch handler 3" + e); return e;});
+};
 
 //Get the Traffic Status for a given org, environment and export it to a file
 var exportAPITrafficStatus = function(aConfig){
@@ -149,22 +149,23 @@ var exportAPITrafficStatus = function(aConfig){
     return getAllAPIs(aConfig.host, aConfig.org, aConfig.auth)
     .then(function(allAPIs){
       for(var i = 0; i < allTrafficAPIs.length; i++){
-        if(allTrafficAPIs[i].apis!=null && allTrafficAPIs[i].apis.traffic!=null)
-          allTrafficAPIs[i].apis.no_traffic = _.difference(allAPIs, allTrafficAPIs[i].apis.traffic);
+        if(allTrafficAPIs[i].apis!=null && allTrafficAPIs[i].apis.traffic!=null){
+          allTrafficAPIs[i].apis.noTraffic = _.difference(allAPIs, allTrafficAPIs[i].apis.traffic);
+        }
         else{
-          allTrafficAPIs[i].apis.no_traffic = _.difference(allAPIs, []);
+          allTrafficAPIs[i].apis.noTraffic = _.difference(allAPIs, []);
         }
       }
       return allTrafficAPIs;
     })
-    .catch(function(e){console.log("Catch handler 8" + e); return e});
+    .catch(function(e){console.log("Catch handler 8" + e); return e;});
   })
   .then(function(apis){
     exportToFile(apis, "api-traffic-status");
     return apis;
   })
-  .catch(function(e){console.log("Catch handler 7" + e); return e});
-}
+  .catch(function(e){console.log("Catch handler 7" + e); return e;});
+};
 
 module.exports = {
     exportAPITrafficStatus,
