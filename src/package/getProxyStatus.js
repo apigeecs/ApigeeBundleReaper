@@ -9,9 +9,9 @@ function getMgmtAPI(host, path, auth){
   return new Promise(function (fulfill, reject){
     var data = "";
     var options = {
-      host: host,
+      host,
       port: 443,
-      path: path,
+      path,
       method: "GET",
       headers: {
           Accept: "application/json",
