@@ -16,7 +16,6 @@ function getMgmtAPI(host, path, auth){
       headers: {
           Accept: "application/json",
           Authorization: auth
-          //Authorization: "Basic c3N2YWlkeWFuYXRoYW5AYXBpZ2VlLmNvbTpUZWphczE4MDEyMDEy"
       }
     };
     var req = https.request(options, function(res) {
