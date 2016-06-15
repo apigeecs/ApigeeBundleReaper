@@ -2,7 +2,7 @@ var proxyStatus = require("./package/getProxyStatus");
 
 proxyStatus.exportAPITrafficStatus({
     host: "api.enterprise.apigee.com",
-    org: "saisarantest",
+    org: "<org>",
     auth: "Basic <auth>",
     env: "all", //all|<valid env>
     axDays: 90
@@ -11,7 +11,7 @@ proxyStatus.exportAPITrafficStatus({
 
 proxyStatus.exportAPIDeploymentStatus({
     host: "api.enterprise.apigee.com",
-    org: "saisarantest",
+    org: "<org>",
     auth: "Basic <auth>",
     env: "all" //all|<valid env>
 });
