@@ -33,37 +33,14 @@ Install npm modules:
 
 ## Usage
 	
-	ApigeeCorporation$ node reaper.js
-	prompt: Please provide Management API Host:  (api.enterprise.apigee.com)
-	prompt: Please provide Management API Version:  (v1)
-	prompt: Please provide Org Name:  saisarantest
-	prompt: Please provide Env Name - all | <env>:  (test)
-	prompt: Please provide number of days:  (90) 
-	prompt: Please provide Org User ID:  ssvaidyanathan@apigee.com
-	prompt: Please provide Org User Password:
+	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js -h api.enterprise.apigee.com -o <org> -e <all|env> -a "Basic <auth> -d 90
 	
-	Output:
-	-------------------------Undeployed APIs in test-----------------------------
-	oauth10a-3legged
-	emailer
-	authorize
-	json-validate
-	catchAll
-	token_v3_rev3_2016_03_01
-	-----------------------------------------------------------------------------
-	
-	--------------APIs with No Traffic in test in the last 90 days---------------
-	java-cookbook
-	base64encoder
-	jira-release-notes
-	ratingsService
-	oauth10a-3legged
-	response-cache
-	oauth-login-app
-	oauth-client-credentials
-	-----------------------------------------------------------------------------
-
-Similarly for all environments for a given organization
+	where
+	-h is the Management API Host
+	-o is the Edge Organization
+	-e is the Edge Environment (all will fetch all environments for a given Org)
+	-a is the Basic auth
+	-d is the number of days for which the traffic needs to be fetched
 	
 	ApigeeCorporation$ node reaper.js
 	prompt: Please provide Management API Host:  (api.enterprise.apigee.com)
@@ -108,3 +85,18 @@ Similarly for all environments for a given organization
 	oauth-login-app
 	oauth-client-credentials
 	-----------------------------------------------------------------------------
+
+You can also run 
+	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js --help 
+	
+	Usage: bundle-reaper [options]
+
+  	Options:
+
+    	-h, --help                           output usage information
+    	-V, --version                        output the version number
+    	-h, --host <host>                    Please provide Management API Host Information [api.enterprise.apigee.com]
+    	-o, --organization <organization>    Please provide the Edge Organization Name
+    	-e, --environment <environment>      Please provide the Environment name [all | test]
+	-a, --authorization <authorization>  Please provide the Edge Basic auth credentials [Basic <auth>]
+	-d, --axDays <axDays>                Please provide the number of days for Traffic
