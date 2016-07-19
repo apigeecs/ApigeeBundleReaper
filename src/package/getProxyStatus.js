@@ -80,7 +80,8 @@ function getDeployedAPIs(host, org, auth, env){
     console.error("Catch handler 4" + e);
     var deployedApis = {};
     deployedApis.apis = {};
-    deployedApis.apis.deployed = apis;
+    deployedApis.apis,error = true;
+    deployedApis.apis.deployed = {};
     return deployedApis;
     //return e;
   });
@@ -140,14 +141,16 @@ var exportAPIDeploymentStatus = function(aConfig){
     return getAllAPIs(aConfig.host, aConfig.org, aConfig.auth)
     .then(function(allAPIs){
       for(var i = 0; i < allDeployedAPIs.length; i++){
-        allDeployedAPIs[i].apis.undeployed = _.difference(allAPIs, allDeployedAPIs[i].apis.deployed);
-        //allDeployedAPIs[i].apis.all = allAPIs;
-        if(allDeployedAPIs[i].apis.undeployed!==null && allDeployedAPIs[i].apis.undeployed.length>0){
-          console.log("-------------------------Undeployed APIs in "+allDeployedAPIs[i].env+"-----------------------------");
-          for (var j = allDeployedAPIs[i].apis.undeployed.length - 1; j >= 0; j--) {
-              console.log(allDeployedAPIs[i].apis.undeployed[j]);
-            }
-          console.log("-----------------------------------------------------------------------------");
+        if(!allDeployedAPIs[i].apis.error){
+          allDeployedAPIs[i].apis.undeployed = _.difference(allAPIs, allDeployedAPIs[i].apis.deployed);
+          //allDeployedAPIs[i].apis.all = allAPIs;
+          if(allDeployedAPIs[i].apis.undeployed!==null && allDeployedAPIs[i].apis.undeployed.length>0){
+            console.log("-------------------------Undeployed APIs in "+allDeployedAPIs[i].env+"-----------------------------");
+            for (var j = allDeployedAPIs[i].apis.undeployed.length - 1; j >= 0; j--) {
+                console.log(allDeployedAPIs[i].apis.undeployed[j]);
+              }
+            console.log("-----------------------------------------------------------------------------");
+          }
         }
       }
       return allDeployedAPIs;
