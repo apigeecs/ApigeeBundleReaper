@@ -78,6 +78,7 @@ function getDeployedAPIs(host, org, auth, env){
   })
   .catch(function(e){
     console.error("Catch handler 4" + e);
+    var deployedApis = {};
     deployedApis.apis = {};
     deployedApis.apis.deployed = apis;
     return deployedApis;
@@ -202,18 +203,18 @@ var exportAPITrafficStatus = function(aConfig){
   .catch(function(e){console.log("Catch handler 7" + e); return e;});
 };
 
-var downloadNoTrafficAPIBundles = function(aConfig){
+/*var downloadNoTrafficAPIBundles = function(aConfig){
   var apis = jsonfile.readFileSync(aConfig.file);
   console.log(JSON.stringify(apis));
 }
 
 var downloadUnDeployedAPIBundles = function(aConfig){
   //console.log(jsonfile.readFileSync(aConfig.file));
-}
+}*/
 
 module.exports = {
     exportAPITrafficStatus,
     exportAPIDeploymentStatus,
-    downloadNoTrafficAPIBundles,
-    downloadUnDeployedAPIBundles
+    //downloadNoTrafficAPIBundles,
+    //downloadUnDeployedAPIBundles
 };
