@@ -19,9 +19,13 @@ function getMgmtAPI(host, path, auth){
       }
     };
     var req = https.request(options, function(res) {
-      if (res.statusCode >= 300) {
+      if (res.statusCode >= 400 && res.statusCode <= 499) {
         console.error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(options));
         throw new Error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(options));
+      }
+      if (res.statusCode >= 500) {
+        console.error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(options));
+        //throw new Error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(options));
       }
       res.on("data", function(d) {
           data += d;
@@ -53,7 +57,8 @@ function getOrgEnvs(host, org, auth, env){
 
 //Get All APIs from Org
 function getAllAPIs(host, org, auth){
-  return getMgmtAPI(host, "/v1/o/"+org+"/apis", auth);
+  var allAPIs = getMgmtAPI(host, "/v1/o/"+org+"/apis", auth);
+  return allAPIs;
 }
 
 //Get Deployed APIs from Each Environment
@@ -71,7 +76,13 @@ function getDeployedAPIs(host, org, auth, env){
       deployedApis.apis.deployed = apis;
       return deployedApis;
   })
-  .catch(function(e){console.log("Catch handler 4" + e); return e;});
+  .catch(function(e){
+    console.error("Catch handler 4" + e);
+    deployedApis.apis = {};
+    deployedApis.apis.deployed = apis;
+    return deployedApis;
+    //return e;
+  });
 }
 
 //Get Traffic for each environment
@@ -97,12 +108,19 @@ function getTraffic(host, org, auth, env, axDays){
       calledAPIs.apis.traffic = api;
     });
     return calledAPIs;
+  })
+  .catch(function (e){
+    console.error(e);
+    calledAPIs.apis = {};
+    calledAPIs.apis.error = true;
+    calledAPIs.apis.traffic = {};
+    return calledAPIs;
   });
 }
 
 //Export response to file
-function exportToFile(apis, fileName){
-  var filePath = "./../output/"+fileName+".json";
+function exportToFile(apis, fileName, org){
+  var filePath = "./../output/"+fileName+"-"+org+".json";
   console.log("Writing to a file : "+filePath);
   jsonfile.writeFileSync(filePath, apis, {spaces: 2});
 }
@@ -136,7 +154,7 @@ var exportAPIDeploymentStatus = function(aConfig){
     .catch(function(e){console.log("Catch handler 2" + e); return e;});
   })
   .then(function (allAPIStatusInfo){
-    exportToFile(allAPIStatusInfo, "api-deployment-status");
+    exportToFile(allAPIStatusInfo, "api-deployment-status", aConfig.org);
     return allAPIStatusInfo;
   })
   .catch(function(e){console.log("Catch handler 3" + e); return e;});
@@ -156,18 +174,21 @@ var exportAPITrafficStatus = function(aConfig){
     return getAllAPIs(aConfig.host, aConfig.org, aConfig.auth)
     .then(function(allAPIs){
       for(var i = 0; i < allTrafficAPIs.length; i++){
-        if(allTrafficAPIs[i].apis!=null && allTrafficAPIs[i].apis.traffic!=null){
-          allTrafficAPIs[i].apis.noTraffic = _.difference(allAPIs, allTrafficAPIs[i].apis.traffic);
-        }
-        else{
-          allTrafficAPIs[i].apis.noTraffic = _.difference(allAPIs, []);
-        }
-        if(allTrafficAPIs[i].apis.noTraffic!==null && allTrafficAPIs[i].apis.noTraffic.length>0){
-            console.log("--------------APIs with No Traffic in "+allTrafficAPIs[i].env+" in the last "+aConfig.axDays+" days---------------");
-            for (var j = allTrafficAPIs[i].apis.noTraffic.length - 1; j >= 0; j--) {
-              console.log(allTrafficAPIs[i].apis.noTraffic[j]);
-            }
-          console.log("-----------------------------------------------------------------------------");
+        if(!allTrafficAPIs[i].apis.error){
+          allTrafficAPIs[i].apis.noTraffic = {};
+          if(allTrafficAPIs[i].apis!=null && allTrafficAPIs[i].apis.traffic!=null){
+            allTrafficAPIs[i].apis.noTraffic = _.difference(allAPIs, allTrafficAPIs[i].apis.traffic);
+          }
+          else{
+            allTrafficAPIs[i].apis.noTraffic = _.difference(allAPIs, []);
+          }
+          if(allTrafficAPIs[i].apis.noTraffic!=null && allTrafficAPIs[i].apis.noTraffic.length>0){
+              console.log("--------------APIs with No Traffic in "+allTrafficAPIs[i].env+" in the last "+aConfig.axDays+" days---------------");
+              for (var j = allTrafficAPIs[i].apis.noTraffic.length - 1; j >= 0; j--) {
+                console.log(allTrafficAPIs[i].apis.noTraffic[j]);
+              }
+            console.log("-----------------------------------------------------------------------------");
+          }
         }
       }
       return allTrafficAPIs;
@@ -175,13 +196,24 @@ var exportAPITrafficStatus = function(aConfig){
     .catch(function(e){console.log("Catch handler 8" + e); return e;});
   })
   .then(function(apis){
-    exportToFile(apis, "api-traffic-status");
+    exportToFile(apis, "api-traffic-status", aConfig.org);
     return apis;
   })
   .catch(function(e){console.log("Catch handler 7" + e); return e;});
 };
 
+var downloadNoTrafficAPIBundles = function(aConfig){
+  var apis = jsonfile.readFileSync(aConfig.file);
+  console.log(JSON.stringify(apis));
+}
+
+var downloadUnDeployedAPIBundles = function(aConfig){
+  //console.log(jsonfile.readFileSync(aConfig.file));
+}
+
 module.exports = {
     exportAPITrafficStatus,
-    exportAPIDeploymentStatus
+    exportAPIDeploymentStatus,
+    downloadNoTrafficAPIBundles,
+    downloadUnDeployedAPIBundles
 };

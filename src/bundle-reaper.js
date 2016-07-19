@@ -43,6 +43,10 @@ if(typeof program.axDays === "undefined" || program.axDays === true){
 	console.log(colors.red("Please provide the number of days for Traffic"));
 	flag = false;
 }
+if(typeof program.axDays === "undefined" || program.axDays === true){
+	console.log(colors.red("Please provide the number of days for Traffic"));
+	flag = false;
+}
 if(!flag){
 	process.exit(1);
 }
@@ -60,5 +64,5 @@ proxyStatus.exportAPIDeploymentStatus({
     host: program.host, //api.enterprise.apigee.com
     org:  program.organization, //saisarantest
     auth: program.authorization, //"Basic <auth>",
-    env:  program.environment, //all
+    env:  program.environment, //all|<valid env>
 });
