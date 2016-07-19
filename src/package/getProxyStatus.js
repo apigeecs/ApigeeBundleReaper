@@ -80,7 +80,7 @@ function getDeployedAPIs(host, org, auth, env){
     console.error("Catch handler 4" + e);
     var deployedApis = {};
     deployedApis.apis = {};
-    deployedApis.apis,error = true;
+    deployedApis.apis.error = true;
     deployedApis.apis.deployed = {};
     return deployedApis;
     //return e;
