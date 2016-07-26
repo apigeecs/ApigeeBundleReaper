@@ -6,13 +6,17 @@ var jsonfile = require("jsonfile");
 
 //Call Mgmt API
 function getMgmtAPI(host, path, auth){
+  return mgmtAPI(host, path, auth, "GET");
+}
+
+function mgmtAPI(host, path, auth, type){
   return new Promise(function (fulfill, reject){
     var data = "";
     var options = {
       host,
       port: 443,
       path,
-      method: "GET",
+      method: type,
       headers: {
           Accept: "application/json",
           Authorization: auth
@@ -25,7 +29,6 @@ function getMgmtAPI(host, path, auth){
       }
       if (res.statusCode >= 500) {
         console.error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(options));
-        //throw new Error(res.statusCode + ": " + res.statusMessage + " with " + JSON.stringify(options));
       }
       res.on("data", function(d) {
           data += d;
@@ -61,8 +64,8 @@ function getAllAPIs(host, org, auth){
   return allAPIs;
 }
 
-//Get Deployed APIs from Each Environment
-function getDeployedAPIs(host, org, auth, env){
+//Get Deployed APIs for Each Environment
+function getDeployedAPIsForEnv(host, org, auth, env){
   return getMgmtAPI(host, "/v1/o/"+org+"/e/"+env+"/deployments", auth)
     .then(function(response){
       var deployedApis = {};
@@ -83,8 +86,42 @@ function getDeployedAPIs(host, org, auth, env){
     deployedApis.apis.error = true;
     deployedApis.apis.deployed = {};
     return deployedApis;
-    //return e;
   });
+}
+
+//Get Deployment details for API - returns false if the API is not deployed in any of the environments in the org
+function getDeploymentStatusForAPI(host, org, auth, api){
+  return getMgmtAPI(host, "/v1/o/"+org+"/apis/"+api+"/deployments", auth)
+    .then(function(response){
+      var status = false;
+      var environments = response.environment;
+      if(environments!=null && environments.length>0)
+        status=true;
+      return status;
+  })
+  .catch(function(e){
+    console.error("Catch handler 4" + e);
+    return false;
+  });
+}
+
+function deleteAPI(host, org, auth, api){
+   return getDeploymentStatusForAPI(host, org, auth, api)
+    .then(function(status){
+      if(!status){
+        return mgmtAPI(host, "/v1/o/"+org+"/apis/"+api, auth, "DELETE")
+        .then(function(response){
+          console.log(api+ " is deleted successfully");
+        });
+      }else{
+        console.log(api+ " cannot be deleted as its running in another environment");
+      }
+    });
+    
+    //return mgmtAPI(host, "/v1/o/"+org+"/apis"+api, auth, "DELETE")
+    //.then(function(response){
+      //console.log(api+ "is deleted successfully");
+    //}
 }
 
 //Get Traffic for each environment
@@ -132,7 +169,7 @@ var exportAPIDeploymentStatus = function(aConfig){
   getOrgEnvs(aConfig.host, aConfig.org, aConfig.auth, aConfig.env)
   .then(function(envs){
     var p = Promise.all(envs.map(function(env){
-      return getDeployedAPIs(aConfig.host, aConfig.org, aConfig.auth, env);
+      return getDeployedAPIsForEnv(aConfig.host, aConfig.org, aConfig.auth, env);
     }));
     p.catch(function(e){console.log("Catch handler 1" + e); return e;});
     return p;
@@ -145,6 +182,7 @@ var exportAPIDeploymentStatus = function(aConfig){
           allDeployedAPIs[i].apis.undeployed = _.difference(allAPIs, allDeployedAPIs[i].apis.deployed);
           //allDeployedAPIs[i].apis.all = allAPIs;
           if(allDeployedAPIs[i].apis.undeployed!==null && allDeployedAPIs[i].apis.undeployed.length>0){
+            console.log("There are "+allDeployedAPIs[i].apis.undeployed.length+" un-deployed proxies");
             console.log("-------------------------Undeployed APIs in "+allDeployedAPIs[i].env+"-----------------------------");
             for (var j = allDeployedAPIs[i].apis.undeployed.length - 1; j >= 0; j--) {
                 console.log(allDeployedAPIs[i].apis.undeployed[j]);
@@ -160,6 +198,10 @@ var exportAPIDeploymentStatus = function(aConfig){
   .then(function (allAPIStatusInfo){
     exportToFile(allAPIStatusInfo, "api-deployment-status", aConfig.org);
     return allAPIStatusInfo;
+  })
+  .then(function(){
+    if(aConfig.deleteUndeployed !== null && aConfig.deleteUndeployed ==="yes")
+      deleteUnDeployedAPIs(aConfig);
   })
   .catch(function(e){console.log("Catch handler 3" + e); return e;});
 };
@@ -187,6 +229,7 @@ var exportAPITrafficStatus = function(aConfig){
             allTrafficAPIs[i].apis.noTraffic = _.difference(allAPIs, []);
           }
           if(allTrafficAPIs[i].apis.noTraffic!=null && allTrafficAPIs[i].apis.noTraffic.length>0){
+            console.log("There are "+allTrafficAPIs[i].apis.noTraffic.length+" proxies with no traffic");
               console.log("--------------APIs with No Traffic in "+allTrafficAPIs[i].env+" in the last "+aConfig.axDays+" days---------------");
               for (var j = allTrafficAPIs[i].apis.noTraffic.length - 1; j >= 0; j--) {
                 console.log(allTrafficAPIs[i].apis.noTraffic[j]);
@@ -206,6 +249,18 @@ var exportAPITrafficStatus = function(aConfig){
   .catch(function(e){console.log("Catch handler 7" + e); return e;});
 };
 
+var deleteUnDeployedAPIs = function(aConfig){
+  var filePath = "./../output/"+"api-deployment-status"+"-"+aConfig.org+".json";
+  var environments = jsonfile.readFileSync(filePath);
+  environments.forEach(function(environment) {
+    console.log("------------------------Deleting in "+environment.env+" environment-------------------------");
+    (environment.apis.undeployed).forEach(function (api){
+      //console.log(api);
+      deleteAPI(aConfig.host, aConfig.org, aConfig.auth, api);
+    });
+  });
+};
+
 /*var downloadNoTrafficAPIBundles = function(aConfig){
   var apis = jsonfile.readFileSync(aConfig.file);
   console.log(JSON.stringify(apis));
@@ -218,6 +273,7 @@ var downloadUnDeployedAPIBundles = function(aConfig){
 module.exports = {
     exportAPITrafficStatus,
     exportAPIDeploymentStatus,
+    deleteUnDeployedAPIs
     //downloadNoTrafficAPIBundles,
     //downloadUnDeployedAPIBundles
 };

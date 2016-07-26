@@ -15,6 +15,7 @@ program
   .option("-e, --environment <environment>", "Please provide the Environment name [all | test]")
   .option("-a, --authorization <authorization>", "Please provide the Edge Basic auth credentials [Basic <auth>]")
   .option("-d, --axDays <axDays>", "Please provide the number of days for Traffic", parseInt)
+  .option("-x, --deleteUndeployed <deleteUndeployed>", "Do you want to delete the undeployed APIs ? [yes | no]")
   .parse(process.argv);
 
 if (!process.argv.slice(2).length) {
@@ -47,6 +48,10 @@ if(typeof program.axDays === "undefined" || program.axDays === true){
 	console.log(colors.red("Please provide the number of days for Traffic"));
 	flag = false;
 }
+if(typeof program.deleteUndeployed === "undefined" || program.deleteUndeployed === true){
+  console.log(colors.red("Please provide yes or no for deleting undeployed APIs"));
+  flag = false;
+}
 if(!flag){
 	process.exit(1);
 }
@@ -64,5 +69,8 @@ proxyStatus.exportAPIDeploymentStatus({
     host: program.host, //api.enterprise.apigee.com
     org:  program.organization, //saisarantest
     auth: program.authorization, //"Basic <auth>",
-    env:  program.environment, //all|<valid env>
+    env:  program.environment, //all
+    deleteUndeployed: program.deleteUndeployed //no
 });
+
+
