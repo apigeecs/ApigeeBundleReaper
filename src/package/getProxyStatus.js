@@ -5,10 +5,6 @@ var fs = require("fs");
 var jsonfile = require("jsonfile");
 
 //Call Mgmt API
-function getMgmtAPI(host, path, auth){
-  return mgmtAPI(host, path, auth, "GET");
-}
-
 function mgmtAPI(host, path, auth, type){
   return new Promise(function (fulfill, reject){
     var data = "";
@@ -44,6 +40,10 @@ function mgmtAPI(host, path, auth, type){
 
     req.end();
   });
+}
+
+function getMgmtAPI(host, path, auth){
+  return mgmtAPI(host, path, auth, "GET");
 }
 
 //Get Environments from Org
@@ -95,8 +95,9 @@ function getDeploymentStatusForAPI(host, org, auth, api){
     .then(function(response){
       var status = false;
       var environments = response.environment;
-      if(environments!=null && environments.length>0)
+      if(environments!=null && environments.length>0){
         status=true;
+      }
       return status;
   })
   .catch(function(e){
@@ -164,6 +165,18 @@ function exportToFile(apis, fileName, org){
   jsonfile.writeFileSync(filePath, apis, {spaces: 2});
 }
 
+var deleteUnDeployedAPIs = function(aConfig){
+  var filePath = "./../output/"+"api-deployment-status"+"-"+aConfig.org+".json";
+  var environments = jsonfile.readFileSync(filePath);
+  environments.forEach(function(environment) {
+    console.log("------------------------Deleting in "+environment.env+" environment-------------------------");
+    (environment.apis.undeployed).forEach(function (api){
+      //console.log(api);
+      deleteAPI(aConfig.host, aConfig.org, aConfig.auth, api);
+    });
+  });
+};
+
 //Get the Deployment Status for a given org, environment and export it to a file
 var exportAPIDeploymentStatus = function(aConfig){
   getOrgEnvs(aConfig.host, aConfig.org, aConfig.auth, aConfig.env)
@@ -200,8 +213,9 @@ var exportAPIDeploymentStatus = function(aConfig){
     return allAPIStatusInfo;
   })
   .then(function(){
-    if(aConfig.deleteUndeployed !== null && aConfig.deleteUndeployed ==="yes")
+    if(aConfig.deleteUndeployed !== null && aConfig.deleteUndeployed ==="yes"){
       deleteUnDeployedAPIs(aConfig);
+    }
   })
   .catch(function(e){console.log("Catch handler 3" + e); return e;});
 };
@@ -247,18 +261,6 @@ var exportAPITrafficStatus = function(aConfig){
     return apis;
   })
   .catch(function(e){console.log("Catch handler 7" + e); return e;});
-};
-
-var deleteUnDeployedAPIs = function(aConfig){
-  var filePath = "./../output/"+"api-deployment-status"+"-"+aConfig.org+".json";
-  var environments = jsonfile.readFileSync(filePath);
-  environments.forEach(function(environment) {
-    console.log("------------------------Deleting in "+environment.env+" environment-------------------------");
-    (environment.apis.undeployed).forEach(function (api){
-      //console.log(api);
-      deleteAPI(aConfig.host, aConfig.org, aConfig.auth, api);
-    });
-  });
 };
 
 /*var downloadNoTrafficAPIBundles = function(aConfig){
