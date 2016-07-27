@@ -98,7 +98,7 @@ function getAllDeployedAPIs(host, org, env, auth){
     }));
     p.catch(function(e){console.log("Catch handler for getAllDeployedAPIs" + e); return e;});
     return p;
-  })
+  });
 }
 
 //Get Deployment details for API - returns false if the API is not deployed in any of the environments in the org
@@ -155,7 +155,7 @@ function deleteAPI(host, org, auth, api){
       if(!status){
         return mgmtAPI(host, "/v1/o/"+org+"/apis/"+api, auth, "DELETE")
         .then(function(response){
-          console.log(api+ " is deleted successfully in "+env);
+          console.log(api+ " is deleted successfully");
         });
       }else{
         console.log(api+ " cannot be deleted as its running in another environment");
