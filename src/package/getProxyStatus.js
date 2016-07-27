@@ -3,6 +3,7 @@ var https = require("https");
 var _ = require("lodash");
 var fs = require("fs");
 var jsonfile = require("jsonfile");
+var json2csv = require("json2csv");
 
 //Call Mgmt API
 function mgmtAPI(host, path, auth, type){
@@ -203,6 +204,43 @@ function exportToFile(apis, fileName, org){
   jsonfile.writeFileSync(filePath, apis, {spaces: 2});
 }
 
+//Export to CSV
+function exportUnUsedAPIsToCSVFile(apis, fileName, org){
+  //var readPath = "./../output/api-traffic-status-saisarantest.json";
+  //var apis = jsonfile.readFileSync(readPath);
+  //console.log(JSON.stringify(apis));
+
+  var noTrafficAPIs = [];
+
+  if(apis!=null && apis.length>0){
+    apis.forEach(function(api) {
+      var env = api.env;
+      (api.apis.noTraffic).forEach(function(noTApi){
+        var noTrafficAPI = {
+          org: org,
+          env: env,
+          name: noTApi
+        }
+        noTrafficAPIs.push(noTrafficAPI);
+      })
+    })
+  }
+
+  var filePath = "./../output/"+fileName+"-"+org+".csv";
+  console.log("Writing to a file : "+filePath);
+  var fields = ['org', 'env', 'name'];
+  var csv = json2csv(
+      { 
+        data: noTrafficAPIs,
+        fields: fields
+      }
+    );
+  fs.writeFile(filePath, csv, function(err) {
+    if (err) throw err;
+    console.log('file saved');
+  });
+}
+
 //Undeploy APIs that has no Traffic
 var undeployUnusedAPIs = function(aConfig){
   var filePath = "./../output/"+"api-traffic-status"+"-"+aConfig.org+".json";
@@ -316,6 +354,7 @@ var exportAPITrafficStatus = function(aConfig){
   })
   .then(function(apis){
     exportToFile(apis, "api-traffic-status", aConfig.org);
+    exportUnUsedAPIsToCSVFile(apis, "api-noTraffic-status", aConfig.org);
     return apis;
   })
   .then(function(){
@@ -340,7 +379,8 @@ module.exports = {
     exportAPITrafficStatus,
     exportAPIDeploymentStatus,
     deleteUnDeployedAPIs,
-    undeployUnusedAPIs
+    undeployUnusedAPIs,
+    exportUnUsedAPIsToCSVFile
     //downloadNoTrafficAPIBundles,
     //downloadUnDeployedAPIBundles
 };

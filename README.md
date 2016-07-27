@@ -42,7 +42,6 @@ Install npm modules:
 	-e is the Edge Environment (all will fetch all environments for a given Org)
 	-a is the Basic auth
 	-d is the number of days for which the traffic needs to be fetched
-	-x is the flag to delete the undeployed APIs running in the org
 	
 	Output:
 	-------------------------Undeployed APIs in test-----------------------------
@@ -79,11 +78,6 @@ Install npm modules:
 	oauth-client-credentials
 	-----------------------------------------------------------------------------
 
-	------------------------Deleting in prod environment-------------------------
-	catchAll is deleted successfully
-	json-validate is deleted successfully
-	token_v3_rev3_2016_03_01 is deleted successfully
-
 
 You can also run 
 
@@ -100,4 +94,3 @@ You can also run
     	-e, --environment <environment>      Please provide the Environment name [all | test]
     	-a, --authorization <authorization>  Please provide the Edge Basic auth credentials [Basic <auth>]
     	-d, --axDays <axDays>                Please provide the number of days for Traffic
-    	-x, --deleteUndeployed <deleteUndeployed>  Do you want to delete the undeployed APIs ? [yes | no]
