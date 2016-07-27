@@ -64,18 +64,6 @@ function getAllAPIs(host, org, auth){
   return allAPIs;
 }
 
-//Get All Deployed APIs in Org
-function getAllDeployedAPIs(host, org, env, auth){
-  return getOrgEnvs(host, org, auth, env)
-  .then(function(envs){
-    var p = Promise.all(envs.map(function(env){
-      return getDeployedAPIsForEnv(host, org, env, auth);
-    }));
-    p.catch(function(e){console.log("Catch handler for getAllDeployedAPIs" + e); return e;});
-    return p;
-  })
-}
-
 //Get Deployed APIs for Each Environment
 function getDeployedAPIsForEnv(host, org, env, auth){
   return getMgmtAPI(host, "/v1/o/"+org+"/e/"+env+"/deployments", auth)
@@ -99,6 +87,18 @@ function getDeployedAPIsForEnv(host, org, env, auth){
     deployedApis.apis.deployed = {};
     return deployedApis;
   });
+}
+
+//Get All Deployed APIs in Org
+function getAllDeployedAPIs(host, org, env, auth){
+  return getOrgEnvs(host, org, auth, env)
+  .then(function(envs){
+    var p = Promise.all(envs.map(function(env){
+      return getDeployedAPIsForEnv(host, org, env, auth);
+    }));
+    p.catch(function(e){console.log("Catch handler for getAllDeployedAPIs" + e); return e;});
+    return p;
+  })
 }
 
 //Get Deployment details for API - returns false if the API is not deployed in any of the environments in the org
