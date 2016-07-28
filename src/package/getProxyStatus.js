@@ -217,26 +217,28 @@ function exportUnUsedAPIsToCSVFile(apis, fileName, org){
       var env = api.env;
       (api.apis.noTraffic).forEach(function(noTApi){
         var noTrafficAPI = {
-          org: org,
-          env: env,
+          org,
+          env,
           name: noTApi
-        }
+        };
         noTrafficAPIs.push(noTrafficAPI);
-      })
-    })
+      });
+    });
   }
 
   var filePath = "./../output/"+fileName+"-"+org+".csv";
   console.log("Writing to a file : "+filePath);
-  var fields = ['org', 'env', 'name'];
+  var fields = ["org", "env", "name"];
   var csv = json2csv(
       { 
         data: noTrafficAPIs,
-        fields: fields
+        fields
       }
     );
   fs.writeFile(filePath, csv, function(err) {
-    if (err) throw err;
+    if (err){
+      throw err;
+    }
     console.log('file saved');
   });
 }
