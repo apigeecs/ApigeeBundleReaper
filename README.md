@@ -12,7 +12,7 @@ A future version will include downloading the proxy bundle to a local directory,
 Features include:
 * Listing API proxies that are not deployed (for a given environment or all environments)
 * Listing API proxies that has no traffic for a specified number of days (for a given environment or all environments)
-* Delete the APIs that are not deployed. -x is the argument that controls the deletion
+
 
 ## Installation
 
