@@ -13,6 +13,7 @@ Features include:
 * Listing API proxies that are not deployed (for a given environment or all environments)
 * Listing API proxies that has no traffic for a specified number of days (for a given environment or all environments)
 * Exports the API proxies that has no traffic into a CSV that can be used as a report
+* Undeploys the list of proxies that has no traffic
 
 
 ## Installation
@@ -35,7 +36,7 @@ Install npm modules:
 
 ## Usage
 	
-	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js -h api.enterprise.apigee.com -o <org> -e <all|env> -a "Basic <auth> -d 90 -x yes
+	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js -h api.enterprise.apigee.com -o <org> -e <all|env> -a "Basic <auth> -d 90 -u yes
 	
 	where
 	-h is the Management API Host
@@ -95,3 +96,4 @@ You can also run
     	-e, --environment <environment>      Please provide the Environment name [all | test]
     	-a, --authorization <authorization>  Please provide the Edge Basic auth credentials [Basic <auth>]
     	-d, --axDays <axDays>                Please provide the number of days for Traffic
+    	-u, --undeployUnused <undeployUnused>  Do you want to undeploy the un-used APIs (no traffic) ? [yes | no]
