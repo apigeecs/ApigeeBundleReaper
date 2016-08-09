@@ -44,6 +44,7 @@ Install npm modules:
 	-e is the Edge Environment (all will fetch all environments for a given Org)
 	-a is the Basic auth
 	-d is the number of days for which the traffic needs to be fetched
+	-u is the flag to undeploy the proxies that has no traffic
 	
 	Output:
 	-------------------------Undeployed APIs in test-----------------------------
