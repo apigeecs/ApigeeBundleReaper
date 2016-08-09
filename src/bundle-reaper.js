@@ -16,7 +16,7 @@ program
   .option("-a, --authorization <authorization>", "Please provide the Edge Basic auth credentials [Basic <auth>]")
   .option("-d, --axDays <axDays>", "Please provide the number of days for Traffic", parseInt)
   //.option("-x, --deleteUndeployed <deleteUndeployed>", "Do you want to delete the undeployed APIs ? [yes | no]")
-  //.option("-u, --undeployUnused <undeployUnused>", "Do you want to undeploy the un-used APIs (no traffic) ? [yes | no]")
+  .option("-u, --undeployUnused <undeployUnused>", "Do you want to undeploy the un-used APIs (no traffic) ? [yes | no]")
   .parse(process.argv);
 
 if (!process.argv.slice(2).length) {
@@ -52,11 +52,11 @@ if(typeof program.axDays === "undefined" || program.axDays === true){
 /*if(typeof program.deleteUndeployed === "undefined" || program.deleteUndeployed === true){
   console.log(colors.red("Please provide yes or no for deleting undeployed APIs"));
   flag = false;
-}
+}*/
 if(typeof program.undeployUnused === "undefined" || program.undeployUnused === true){
   console.log(colors.red("Please provide yes or no for undeploying un-used APIs"));
   flag = false;
-}*/
+}
 if(!flag){
 	process.exit(1);
 }
@@ -67,7 +67,7 @@ proxyStatus.exportAPITrafficStatus({
     auth: program.authorization, //"Basic <auth>",
     env:  program.environment, //all|<valid env>
     axDays: program.axDays, //90
-    undeployUnused: "no" //program.undeployUnused
+    undeployUnused: program.undeployUnused
 });
 
 
@@ -79,3 +79,4 @@ proxyStatus.exportAPIDeploymentStatus({
     deleteUndeployed: "no" //program.deleteUndeployed
 });
 
+//proxyStatus.exportUnUsedAPIsToCSVFile(null, "api-traffic-status", "saisarantest");
