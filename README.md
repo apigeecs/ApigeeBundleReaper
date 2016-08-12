@@ -97,4 +97,4 @@ You can also run
     	-e, --environment <environment>      Please provide the Environment name [all | test]
     	-a, --authorization <authorization>  Please provide the Edge Basic auth credentials [Basic <auth>]
     	-d, --axDays <axDays>                Please provide the number of days for Traffic
-    	-u, --undeployUnused <undeployUnused>  Do you want to undeploy the un-used APIs (no traffic) ? [yes | no]
+    	-u, --undeployUnused <undeployUnused>  Do you want to undeploy the APIs with no traffic ? [yes | no]

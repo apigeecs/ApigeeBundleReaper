@@ -180,6 +180,15 @@ function getTraffic(host, org, auth, env, axDays){
       var api = [];
       if(dimensions!=null && dimensions.length>0){
         dimensions.forEach(function(dimension) {
+          var count = 0;
+          var metrics = dimension.metrics;
+          metrics.forEach(function(metric){
+            var values = metric.values;
+            values.forEach(function(value){
+              count = count+parseInt(value.value);
+            })
+          });
+          //console.log(org+"\t\t"+env+"\t\t"+dimension.name+"\t\t"+count);
           api.push(dimension.name);
         });
       }
