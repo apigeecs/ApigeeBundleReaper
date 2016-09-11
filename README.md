@@ -30,7 +30,9 @@ Navigate to the package directory:
 
 	ApigeeCorporation$ cd path/to/ApigeeBundleReaper/src/package/
 
-Install npm modules:
+Install npm modules :
+
+*NOTE: Please have the latest npm module on your machine. You can execute `npm insall -g npm` to get the latest*
 
 	ApigeeCorporation$ sudo npm install
 
