@@ -6,7 +6,7 @@ var jsonfile = require("jsonfile");
 var json2csv = require("json2csv");
 
 //Call Mgmt API
-function mgmtAPI(host, path, auth, type){
+exports.mgmtAPI = function(host, path, auth, type){
   return new Promise(function (fulfill, reject){
     var data = "";
     var options = {
