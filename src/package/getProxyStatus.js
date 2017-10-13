@@ -6,7 +6,8 @@ var jsonfile = require("jsonfile");
 var json2csv = require("json2csv");
 
 //Call Mgmt API
-exports.mgmtAPI = function(host, port, path, auth, type){
+//exports.mgmtAPI = function(host, port, path, auth, type){
+function mgmtAPI(host, port, path, auth, type){
   return new Promise(function (fulfill, reject){
     var data = "";
     var options = {
@@ -322,17 +323,17 @@ var exportAPIDeploymentStatus = function(aConfig){
 
 //Get the Traffic Status for a given org, environment and export it to a file
 var exportAPITrafficStatus = function(aConfig){
-  getOrgEnvs(aConfig.host, aConfig.port, aConfig.port, aConfig.org, aConfig.auth, aConfig.env)
+  getOrgEnvs(aConfig.host, aConfig.port, aConfig.org, aConfig.auth, aConfig.env)
   .then(function(envs){
     var p = Promise.all(envs.map(function(env){
-      return getTraffic(aConfig.host, aConfig.port, aConfig.port, aConfig.org, aConfig.auth, env, aConfig.axDays);
+      return getTraffic(aConfig.host, aConfig.port, aConfig.org, aConfig.auth, env, aConfig.axDays);
     }));
     p.catch(function(e){console.log("Catch handler exportAPITrafficStatus" + e); return e;});
     return p;
   })
   .then(function(allTrafficAPIs){
     //return getAllAPIs(aConfig.host, aConfig.port, aConfig.port, aConfig.org, aConfig.auth)
-    return getAllDeployedAPIs(aaConfig.host, aConfig.port, aConfig.port, aConfig.org, aConfig.env, aConfig.auth)
+    return getAllDeployedAPIs(aConfig.host, aConfig.port, aConfig.org, aConfig.env, aConfig.auth)
     .then(function(allDeployedAPIs){
       //console.log("allDeployedAPIs: "+JSON.stringify(allDeployedAPIs));
       //console.log("allTrafficAPIs: "+JSON.stringify(allTrafficAPIs));
