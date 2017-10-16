@@ -38,7 +38,7 @@ Install npm modules :
 
 ## Usage
 	
-	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js -h api.enterprise.apigee.com -p 443 -o <org> -e <all|env> -a "Basic <auth> -d 90 -u yes
+	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js -h api.enterprise.apigee.com -p 443 -o <org> -e <all|env> -a "Basic <auth>" -d 90 -u yes
 	
 	where
 	-h is the Management API Host
