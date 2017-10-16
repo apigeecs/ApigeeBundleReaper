@@ -10,6 +10,7 @@ function makeRed(txt) {
 
 program
   .version("0.0.1")
+  .option("-s, --secure <secure>", "Please provide the Management Host protocol [http | https]")
   .option("-h, --host <host>", "Please provide Management API Host Information [api.enterprise.apigee.com]")
   .option("-p, --port <port>", "Please provide Management API Port Information [443]")
   .option("-o, --organization <organization>", "Please provide the Edge Organization Name")
@@ -32,6 +33,10 @@ if(typeof program.host === "undefined" || program.host === true){
 }
 if(typeof program.port === "undefined" || program.port === true){
   console.log(colors.red("Please provide Management API Port Information [443]"));
+  flag = false;
+}
+if(typeof program.secure === "undefined" || program.secure === true){
+  console.log(colors.red("Please provide if http or https"));
   flag = false;
 }
 if(typeof program.organization === "undefined" || program.organization === true){
@@ -69,6 +74,7 @@ if(!flag){
 proxyStatus.exportAPITrafficStatus({
     host: program.host, //api.enterprise.apigee.com
     port: program.port, //443
+    proto: program.secure, //https
     org:  program.organization, //saisarantest
     auth: program.authorization, //"Basic <auth>",
     env:  program.environment, //all|<valid env>
@@ -80,6 +86,7 @@ proxyStatus.exportAPITrafficStatus({
 proxyStatus.exportAPIDeploymentStatus({
     host: program.host, //api.enterprise.apigee.com
     port: program.port, //443
+    proto: program.secure, //https
     org:  program.organization, //saisarantest
     auth: program.authorization, //"Basic <auth>",
     env:  program.environment, //all

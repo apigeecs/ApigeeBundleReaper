@@ -1,5 +1,5 @@
 var request = require("request");
-var https = require("https");
+var https;
 var _ = require("lodash");
 var fs = require("fs");
 var jsonfile = require("jsonfile");
@@ -7,7 +7,11 @@ var json2csv = require("json2csv");
 
 //Call Mgmt API
 //exports.mgmtAPI = function(host, port, path, auth, type){
-function mgmtAPI(host, port, path, auth, type){
+function mgmtAPI(proto, host, port, path, auth, type){
+  if(proto === "http")
+    https = require("http");
+  else
+    https = require ("https");
   return new Promise(function (fulfill, reject){
     var data = "";
     var options = {
@@ -43,15 +47,15 @@ function mgmtAPI(host, port, path, auth, type){
     req.end();
   });
 }
-
-function getMgmtAPI(host, port, path, auth){
-  return mgmtAPI(host, port, path, auth, "GET");
+ 
+function getMgmtAPI(proto, host, port, path, auth){
+  return mgmtAPI(proto, host, port, path, auth, "GET");
 }
 
 //Get Environments from Org
-function getOrgEnvs(host, port, org, auth, env){
+function getOrgEnvs(proto, host, port, org, auth, env){
   if(env === "all"){
-    return getMgmtAPI(host, port, "/v1/o/"+org+"/e", auth);
+    return getMgmtAPI(proto, host, port, "/v1/o/"+org+"/e", auth);
   }
   else{
     return new Promise(function(fulfill, reject){
@@ -61,14 +65,14 @@ function getOrgEnvs(host, port, org, auth, env){
 }
 
 //Get All APIs from Org
-function getAllAPIs(host, port, org, auth){
-  var allAPIs = getMgmtAPI(host, port, "/v1/o/"+org+"/apis", auth);
+function getAllAPIs(proto, host, port, org, auth){
+  var allAPIs = getMgmtAPI(proto, host, port, "/v1/o/"+org+"/apis", auth);
   return allAPIs;
 }
 
 //Get Deployed APIs for Each Environment
-function getDeployedAPIsForEnv(host, port, org, env, auth){
-  return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/deployments", auth)
+function getDeployedAPIsForEnv(proto, host, port, org, env, auth){
+  return getMgmtAPI(proto, host, port, "/v1/o/"+org+"/e/"+env+"/deployments", auth)
     .then(function(response){
       var deployedApis = {};
       deployedApis.env = response.name;
@@ -92,11 +96,11 @@ function getDeployedAPIsForEnv(host, port, org, env, auth){
 }
 
 //Get All Deployed APIs in Org
-function getAllDeployedAPIs(host, port, org, env, auth){
-  return getOrgEnvs(host, port, org, auth, env)
+function getAllDeployedAPIs(proto, host, port, org, env, auth){
+  return getOrgEnvs(proto, host, port, org, auth, env)
   .then(function(envs){
     var p = Promise.all(envs.map(function(env){
-      return getDeployedAPIsForEnv(host, port, org, env, auth);
+      return getDeployedAPIsForEnv(proto, host, port, org, env, auth);
     }));
     p.catch(function(e){console.log("Catch handler for getAllDeployedAPIs" + e); return e;});
     return p;
@@ -104,8 +108,8 @@ function getAllDeployedAPIs(host, port, org, env, auth){
 }
 
 //Get Deployment details for API - returns false if the API is not deployed in any of the environments in the org
-function getDeploymentStatusForAPI(host, port, org, auth, api){
-  return getMgmtAPI(host, port, "/v1/o/"+org+"/apis/"+api+"/deployments", auth)
+function getDeploymentStatusForAPI(proto, host, port, org, auth, api){
+  return getMgmtAPI(proto, host, port, "/v1/o/"+org+"/apis/"+api+"/deployments", auth)
     .then(function(response){
       var status = false;
       var environments = response.environment;
@@ -121,8 +125,8 @@ function getDeploymentStatusForAPI(host, port, org, auth, api){
 }
 
 //Get Deployed revision details for API
-function getDeployedRevisionForAPI(host, port, org, env, auth, api){
-  return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/deployments", auth)
+function getDeployedRevisionForAPI(proto, host, port, org, env, auth, api){
+  return getMgmtAPI(proto, host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/deployments", auth)
     .then(function(response){
       var revision;
       if(response!=null && response.revision!=null && response.revision.length>0){
@@ -137,12 +141,12 @@ function getDeployedRevisionForAPI(host, port, org, env, auth, api){
 }
 
 //To undeploy API
-function undeployAPI(host, port, org, env, auth, api){
-   return getDeployedRevisionForAPI(host, port, org, env, auth, api)
+function undeployAPI(proto, host, port, org, env, auth, api){
+   return getDeployedRevisionForAPI(proto, host, port, org, env, auth, api)
     .then(function(revision){
       if(revision!=null){
         console.log("Revision: "+ revision+" is getting undeployed for "+ api);
-        return mgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/revisions/"+revision+"/deployments", auth, "DELETE")
+        return mgmtAPI(proto, host, port, "/v1/o/"+org+"/e/"+env+"/apis/"+api+"/revisions/"+revision+"/deployments", auth, "DELETE")
         .then(function(response){
           console.log(api+ " is undeployed successfully in "+ env);
         });
@@ -151,11 +155,11 @@ function undeployAPI(host, port, org, env, auth, api){
 }
 
 //To delete API
-function deleteAPI(host, port, org, auth, api){
-   return getDeploymentStatusForAPI(host, port, org, auth, api)
+function deleteAPI(proto, host, port, org, auth, api){
+   return getDeploymentStatusForAPI(proto, host, port, org, auth, api)
     .then(function(status){
       if(!status){
-        return mgmtAPI(host, port, "/v1/o/"+org+"/apis/"+api, auth, "DELETE")
+        return mgmtAPI(proto, host, port, "/v1/o/"+org+"/apis/"+api, auth, "DELETE")
         .then(function(response){
           console.log(api+ " is deleted successfully");
         });
@@ -166,13 +170,13 @@ function deleteAPI(host, port, org, auth, api){
 }
 
 //Get Traffic for each environment
-function getTraffic(host, port, org, auth, env, axDays){
+function getTraffic(proto, host, port, org, auth, env, axDays){
   var toDate = new Date();
   var formattedToDate = (toDate.getMonth()+1)+"/"+(toDate.getDate()+1)+"/"+toDate.getFullYear()+"%2000:00";//MM/DD/YYYY%20HH:MM
   var fromDate = new Date(toDate - (axDays*24*3600*1000));
   var formattedFromDate = (fromDate.getMonth()+1)+"/"+fromDate.getDate()+"/"+fromDate.getFullYear()+"%2000:00";//MM/DD/YYYY%20HH:MM
   var calledAPIs ={};
-  return getMgmtAPI(host, port, "/v1/o/"+org+"/e/"+env+"/stats/apis?select=sum(message_count)&timeUnit=day&timeRange="+formattedFromDate+"~"+formattedToDate, auth)
+  return getMgmtAPI(proto, host, port, "/v1/o/"+org+"/e/"+env+"/stats/apis?select=sum(message_count)&timeUnit=day&timeRange="+formattedFromDate+"~"+formattedToDate, auth)
     .then(function(response){
     var environments = response.environments;
     calledAPIs.env = env;
@@ -260,7 +264,7 @@ var undeployUnusedAPIs = function(aConfig){
   environments.forEach(function(environment) {
     (environment.apis.noTraffic).forEach(function (api){
       //console.log(api);
-      undeployAPI(aConfig.host, aConfig.port, aConfig.org, environment.env, aConfig.auth, api);
+      undeployAPI(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, environment.env, aConfig.auth, api);
     });
   });
 };
@@ -272,23 +276,23 @@ var deleteUnDeployedAPIs = function(aConfig){
   environments.forEach(function(environment) {
     (environment.apis.undeployed).forEach(function (api){
       //console.log(api);
-      deleteAPI(aConfig.host, aConfig.port, aConfig.org, aConfig.auth, api);
+      deleteAPI(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, aConfig.auth, api);
     });
   });
 };
 
 //Get the Deployment Status for a given org, environment and export it to a file
 var exportAPIDeploymentStatus = function(aConfig){
-  getOrgEnvs(aConfig.host, aConfig.port, aConfig.org, aConfig.auth, aConfig.env)
+  getOrgEnvs(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, aConfig.auth, aConfig.env)
   .then(function(envs){
     var p = Promise.all(envs.map(function(env){
-      return getDeployedAPIsForEnv(aConfig.host, aConfig.port, aConfig.org, env, aConfig.auth);
+      return getDeployedAPIsForEnv(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, env, aConfig.auth);
     }));
     p.catch(function(e){console.log("Catch handler for exportAPIDeploymentStatus" + e); return e;});
     return p;
   })
   .then(function(allDeployedAPIs){
-    return getAllAPIs(aConfig.host, aConfig.port, aConfig.org, aConfig.auth)
+    return getAllAPIs(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, aConfig.auth)
     .then(function(allAPIs){
       for(var i = 0; i < allDeployedAPIs.length; i++){
         if(!allDeployedAPIs[i].apis.error){
@@ -323,17 +327,17 @@ var exportAPIDeploymentStatus = function(aConfig){
 
 //Get the Traffic Status for a given org, environment and export it to a file
 var exportAPITrafficStatus = function(aConfig){
-  getOrgEnvs(aConfig.host, aConfig.port, aConfig.org, aConfig.auth, aConfig.env)
+  getOrgEnvs(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, aConfig.auth, aConfig.env)
   .then(function(envs){
     var p = Promise.all(envs.map(function(env){
-      return getTraffic(aConfig.host, aConfig.port, aConfig.org, aConfig.auth, env, aConfig.axDays);
+      return getTraffic(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, aConfig.auth, env, aConfig.axDays);
     }));
     p.catch(function(e){console.log("Catch handler exportAPITrafficStatus" + e); return e;});
     return p;
   })
   .then(function(allTrafficAPIs){
     //return getAllAPIs(aConfig.host, aConfig.port, aConfig.port, aConfig.org, aConfig.auth)
-    return getAllDeployedAPIs(aConfig.host, aConfig.port, aConfig.org, aConfig.env, aConfig.auth)
+    return getAllDeployedAPIs(aConfig.proto, aConfig.host, aConfig.port, aConfig.org, aConfig.env, aConfig.auth)
     .then(function(allDeployedAPIs){
       //console.log("allDeployedAPIs: "+JSON.stringify(allDeployedAPIs));
       //console.log("allTrafficAPIs: "+JSON.stringify(allTrafficAPIs));

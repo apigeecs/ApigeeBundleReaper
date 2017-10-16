@@ -38,12 +38,12 @@ Install npm modules :
 
 ## Usage
 	
-	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js -h api.enterprise.apigee.com -p 443 -o <org> -e <all|env> -a "Basic <auth>" -d 90 -u yes
+	ApigeeCorporation$ node path/to/ApigeeBundleReaper/src/bundle-reaper.js -s https -h api.enterprise.apigee.com -p 443 -o <org> -e <all|env> -a "Basic <auth>" -d 90 -u yes
 	
 	where
+	-s is the Management API protocol
 	-h is the Management API Host
 	-p is the Management API Port
-	-o is the Edge Organization
 	-e is the Edge Environment (all will fetch all environments for a given Org)
 	-a is the Basic auth
 	-d is the number of days for which the traffic needs to be fetched
@@ -95,8 +95,9 @@ You can also run
 
     	-h, --help                           output usage information
     	-V, --version                        output the version number
+    	-s, --secure <secure>                Please provide the Management Host protocol [http | https]
     	-h, --host <host>                    Please provide Management API Host Information [api.enterprise.apigee.com]
-    	-p, --port <port>                      Please provide Management API Port Information [443]
+    	-p, --port <port>                    Please provide Management API Port Information [443]
     	-o, --organization <organization>    Please provide the Edge Organization Name
     	-e, --environment <environment>      Please provide the Environment name [all | test]
     	-a, --authorization <authorization>  Please provide the Edge Basic auth credentials [Basic <auth>]
