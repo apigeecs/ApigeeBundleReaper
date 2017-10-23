@@ -28,7 +28,7 @@ Alternatively you can download the zip file via the GitHub home page and unzip t
 
 Navigate to the package directory:
 
-	ApigeeCorporation$ cd path/to/ApigeeBundleReaper/src/package/
+	ApigeeCorporation$ cd path/to/ApigeeBundleReaper/src/
 
 Install npm modules :
 
