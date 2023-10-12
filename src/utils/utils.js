@@ -35,8 +35,11 @@ async function callMgmtAPI(method, path, token, serviceAccount) {
     const response = await instance(path);
     return response.data;
   } catch (error) {
-    //console.error(error.response.data);
-    throw error;
+    console.error({
+      code: error.response.data.error.code,
+      message: error.response.data.error.message
+    })
+    process.exit(1);
   }
 }
 
