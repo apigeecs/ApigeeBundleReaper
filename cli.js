@@ -17,7 +17,6 @@
 const { Command } = require('commander');
       program = new Command(),
       Option = require('commander').Option,
-      colors = require("colors"),
       pkj = require('./package.json'),
       findProxiesWithoutTraffic = require("./src/package/findProxiesWithoutTraffic"),
       findUndeployedProxies = require("./src/package/findUndeployedProxies");
@@ -55,27 +54,27 @@ program.parse(process.argv);
 function validate(options, command){
     var flag = true;
     if(!options.organization){
-        console.log(colors.red("Please provide the Apigee Organization Name using the '-o' option"));
+        console.log("Please provide the Apigee Organization Name using the '-o' option");
         flag = false;
     }
     if(!options.environment){
-        console.log(colors.red("Please provide the Environment name using the '-e' option"));
+        console.log("Please provide the Environment name using the '-e' option");
         flag = false;
     }
     if(!options.token){
-        console.log(colors.red("Please provide the access token using the '-t' option"));
+        console.log("Please provide the access token using the '-t' option");
         flag = false;
     }
     if(command == 'findProxiesWithoutTraffic' && !options.axDays){
-        console.log(colors.red("Please provide the number of days for Traffic using the '-d' option"));
+        console.log("Please provide the number of days for Traffic using the '-d' option");
         flag = false;
     }
     if(command == 'findProxiesWithoutTraffic' && !options.undeployUnused){
-        console.log(colors.red("Please provide if you would like to undeploy the unused proxies using the '-u' option"));
+        console.log("Please provide if you would like to undeploy the unused proxies using the '-u' option");
         flag = false;
     }
     // if(command == 'findUndeployedProxies' && !options.deleteUndeployed){
-    //     console.log(colors.red("Please provide if you would like to delete the proxy using the '-x' option"));
+    //     console.log("Please provide if you would like to delete the proxy using the '-x' option");
     //     flag = false;
     // }
     if(!flag){
