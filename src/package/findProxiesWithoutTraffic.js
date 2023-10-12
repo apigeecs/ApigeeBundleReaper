@@ -30,7 +30,7 @@ const debug = require("debug")(`findProxiesWithoutTraffic`);
 async function process(options){
   let envs = [];
   let toDate = new Date();
-  let formattedToDate = (toDate.getMonth()+1)+"/"+(toDate.getDate())+"/"+toDate.getFullYear()+" 00:00";//MM/DD/YYYY HH:MM
+  let formattedToDate = (toDate.getMonth()+1)+"/"+toDate.getDate()+"/"+toDate.getFullYear()+" 00:00";//MM/DD/YYYY HH:MM
   let fromDate = new Date(toDate - (options.axDays*24*3600*1000));
   let formattedFromDate = (fromDate.getMonth()+1)+"/"+fromDate.getDate()+"/"+fromDate.getFullYear()+" 00:00";//MM/DD/YYYY HH:MM
   if(options.environment == "all"){
