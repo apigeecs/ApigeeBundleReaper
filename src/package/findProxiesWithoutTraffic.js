@@ -62,7 +62,8 @@ async function process(options){
     debug(`Proxies with Traffic in the last ${options.axDays} days in ${env}: ${proxiesWithTraffic}`);
     unUsedProxies = deployedProxies.filter(deployedProxy => !proxiesWithTraffic.includes(deployedProxy));
     debug(`Proxies with No Traffic in the last ${options.axDays} days in ${env}: ${unUsedProxies}`);
-    console.log(`Proxies with No Traffic in the last ${options.axDays} days in ${env}: ${unUsedProxies}`);
+    console.log(`Proxies with No Traffic in the last ${options.axDays} days in ${env}:`);
+    utils.sortAndPrintArray(unUsedProxies);
 
     if(options.undeployUnused == "Y"){
       for (const unUsedProxy of unUsedProxies){

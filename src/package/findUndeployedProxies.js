@@ -59,7 +59,8 @@ async function process(options){
 
     undeployedProxies = allProxies.filter(proxy => !deployedProxies.includes(proxy));
     debug(`Undeployed proxies in ${env}: ${undeployedProxies}`);
-    console.log(`Undeployed proxies in ${env}: ${undeployedProxies}`);
+    console.log(`Undeployed proxies in ${env}:`);
+    utils.sortAndPrintArray(undeployedProxies);
 
     let deployedSharedFlows = []; undeployedSharedFlows=[];
     //Get the list of deployed sharedFlows
@@ -73,7 +74,8 @@ async function process(options){
 
     undeployedSharedFlows = allSharedFlows.filter(sf => !deployedSharedFlows.includes(sf));
     debug(`Undeployed Shared Flows in ${env}: ${undeployedSharedFlows}`);
-    console.log(`Undeployed Shared Flows in ${env}: ${undeployedSharedFlows}`);
+    console.log(`Undeployed Shared Flows in ${env}:`);
+    utils.sortAndPrintArray(undeployedSharedFlows);
     console.log("\n----------------------------------------------------------------------------------------------------------------\n");
   }
 }

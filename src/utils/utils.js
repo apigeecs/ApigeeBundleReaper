@@ -47,6 +47,17 @@ async function getGoogleAccessToken(serviceAccount){
   return token;
 }
 
+function sortAndPrintArray(array){
+  if(array && array.length>0){
+    array.sort();
+    for (const elem of array){
+      console.log("\t"+elem);
+    }
+  }
+  console.log(`\nTotal count: ${array.length}`)
+}
+
 module.exports = {
-  callMgmtAPI
+  callMgmtAPI,
+  sortAndPrintArray
 };
