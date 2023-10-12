@@ -63,3 +63,11 @@ To find the number of proxies/sharedflows deployed in an Apigee environment
 TOKEN=$(gcloud auth print-access-token)
 bundle-reaper findDeploymentCount -o {org} -t $TOKEN 
 ```
+
+### listProxiesWithRevisions
+To list proxies and sharedflows that have higher revisions
+
+```sh
+TOKEN=$(gcloud auth print-access-token)
+bundle-reaper listProxiesWithRevisions -o {org} -t $TOKEN -r {rev}
+```

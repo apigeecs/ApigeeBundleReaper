@@ -20,7 +20,8 @@ const { Command } = require('commander');
       pkj = require('./package.json'),
       findProxiesWithoutTraffic = require("./src/package/findProxiesWithoutTraffic"),
       findUndeployedProxies = require("./src/package/findUndeployedProxies"),
-      findDeploymentCount = require("./src/package/findDeploymentCount");
+      findDeploymentCount = require("./src/package/findDeploymentCount"),
+      listProxiesWithRevisions = require("./src/package/listProxiesWithRevisions");
 
 program
     .name('bundle-reaper')
@@ -44,7 +45,6 @@ program.command('findUndeployedProxies')
     .option("-o, --organization <organization>", "Please provide the Apigee Organization Name")
     .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
     .option("-t, --token <token>", "Please provide the access token")
-    //.addOption(new Option("-x, --deleteUndeployed <deleteUndeployed>", "Do you want to delete the undeployed proxies? Y or N").choices(['Y', 'N']).default('N'))
     .action((options) => {
         validate(options, 'findUndeployedProxies');
         findUndeployedProxies.process(options);
@@ -55,10 +55,20 @@ program.command('findDeploymentCount')
     .option("-o, --organization <organization>", "Please provide the Apigee Organization Name")
     .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
     .option("-t, --token <token>", "Please provide the access token")
-    //.addOption(new Option("-x, --deleteUndeployed <deleteUndeployed>", "Do you want to delete the undeployed proxies? Y or N").choices(['Y', 'N']).default('N'))
     .action((options) => {
         validate(options, 'findDeploymentCount');
         findDeploymentCount.process(options);
+    });
+
+program.command('listProxiesWithRevisions')
+    .description('To list proxies and sharedflows that have higher revisions')
+    .option("-o, --organization <organization>", "Please provide the Apigee Organization Name")
+    .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
+    .option("-r, --revisions <revisions>", "Number of revisions to search", parseInt)
+    .option("-t, --token <token>", "Please provide the access token")
+    .action((options) => {
+        validate(options, 'listProxiesWithRevisions');
+        listProxiesWithRevisions.process(options);
     });
 
 program.parse(process.argv);
@@ -83,6 +93,10 @@ function validate(options, command){
     }
     if(command == 'findProxiesWithoutTraffic' && !options.undeployUnused){
         console.log("Please provide if you would like to undeploy the unused proxies using the '-u' option");
+        flag = false;
+    }
+    if(command == 'listProxiesWithRevisions' && !options.revisions){
+        console.log("Please provide the number of revisions using the '-r' option");
         flag = false;
     }
     // if(command == 'findUndeployedProxies' && !options.deleteUndeployed){
