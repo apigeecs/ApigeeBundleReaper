@@ -25,14 +25,18 @@ async function process(options){
   //Get the list of all proxies in the org
   let allProxies=[];
   let allProxiesResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/apis`, options.token, options.serviceAccount);
-  for (const proxy of allProxiesResponse.proxies){
-    allProxies.push(proxy.name);
+  if(allProxiesResponse.proxies){
+    for (const proxy of allProxiesResponse.proxies){
+      allProxies.push(proxy.name);
+    }
   }
-
+  
   let allSharedFlows=[];
   let allSharedFlowResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/sharedflows`, options.token, options.serviceAccount);
-  for (const sharedFlow of allSharedFlowResponse.sharedFlows){
-    allSharedFlows.push(sharedFlow.name);
+  if(allSharedFlowResponse.sharedFlows){
+    for (const sharedFlow of allSharedFlowResponse.sharedFlows){
+      allSharedFlows.push(sharedFlow.name);
+    }
   }
 
   let envs = [];
