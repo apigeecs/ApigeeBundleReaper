@@ -37,6 +37,7 @@ bundle-reaper --help
 bundle-reaper findProxiesWithoutTraffic --help
 bundle-reaper findUndeployedProxies --help
 bundle-reaper findDeploymentCount --help
+bundle-reaper listProxiesWithRevisions --help
 ```	
 
 ### findProxiesWithoutTraffic
