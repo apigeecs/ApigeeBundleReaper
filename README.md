@@ -72,3 +72,5 @@ To list proxies and sharedflows that have higher revisions
 TOKEN=$(gcloud auth print-access-token)
 bundle-reaper listProxiesWithRevisions -o {org} -t $TOKEN -r {rev}
 ```
+
+**NOTE:** You can either pass the token using the `-t` option or the path of the service account json file using the `-s` option. Latter will be used to generate the token and invoke the Apigee APIs.
