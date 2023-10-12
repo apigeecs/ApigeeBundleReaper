@@ -15,6 +15,7 @@
 */
 
 const axios = require('axios');
+const {GoogleAuth} = require('google-auth-library');
 const debug = require("debug")(`utils`);
 
 //Call Mgmt API
@@ -36,6 +37,13 @@ async function callMgmtAPI(method, path, token) {
   }
 }
 
+async function getGoogleAccessToken(){
+  const auth = new GoogleAuth({scopes: 'https://www.googleapis.com/auth/cloud-platform'}); 
+  const token = await auth.getAccessToken();
+  console.log(token);
+}
+
 module.exports = {
-  callMgmtAPI
+  callMgmtAPI,
+  getGoogleAccessToken
 };

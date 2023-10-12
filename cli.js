@@ -24,7 +24,7 @@ const { Command } = require('commander');
 program
     .name('bundle-reaper')
     .description('Apigee Bundle Reaper')
-    .version(pkj.version)
+    .version(pkj.version);
 
 program.command('findProxiesWithoutTraffic')
     .description('To find the list of proxies without traffic in an Apigee organization')

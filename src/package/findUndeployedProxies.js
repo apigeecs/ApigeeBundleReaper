@@ -18,8 +18,7 @@ const utils = require("../utils/utils");
 const debug = require("debug")(`findUndeployedProxies`);
 
 async function test(options){
-  let response = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/apis`, options.token);
-  console.log(response.proxies);
+  let response = await utils.getGoogleAccessToken();
 }
 
 async function process(options){

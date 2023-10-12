@@ -27,7 +27,8 @@
   "dependencies": {
     "axios": "^1.5.1",
     "commander": "11.0.0",
-    "debug": "^4.3.4"
+    "debug": "^4.3.4",
+    "google-auth-library": "^9.1.0"
   },
   "engines": {
     "node": ">= 12.22.0",
