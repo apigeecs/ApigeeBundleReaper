@@ -40,6 +40,8 @@ bundle-reaper findDeploymentCount --help
 bundle-reaper listProxiesWithRevisions --help
 ```	
 
+**NOTE:** You can either pass the token using the `-t` option or the path of the service account json file using the `-s` option. Latter will be used to generate the token and invoke the Apigee APIs.
+
 ### findProxiesWithoutTraffic
 To find the proxies without traffic in a given Apigee org for a given number of days. The same command can be used to undeploy those proxy revisions in the Apigee environment
 
@@ -72,5 +74,3 @@ To list proxies and sharedflows that have higher revisions
 TOKEN=$(gcloud auth print-access-token)
 bundle-reaper listProxiesWithRevisions -o {org} -t $TOKEN -r {rev}
 ```
-
-**NOTE:** You can either pass the token using the `-t` option or the path of the service account json file using the `-s` option. Latter will be used to generate the token and invoke the Apigee APIs.
