@@ -12,8 +12,8 @@ Features include:
 
 
 ## Pre-requisites
-- Node.js
-- gcloud SDK
+- Node.js (v12 or later)
+- gcloud SDK (v8 or later)
 	
 
 ## Installation
@@ -21,7 +21,7 @@ Features include:
 Clone the bundle-reaper repository to your local machine:
 ```sh
 git clone https://github.com/apigeecs/ApigeeBundleReaper.git
-cd ApigeeBundleReaper
+cd ApigeeBundleReaper; npm install
 ```
 
 Execute the following command:
