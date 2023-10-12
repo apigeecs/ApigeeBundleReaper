@@ -28,6 +28,13 @@ async function process(options){
   for (const proxy of allProxiesResponse.proxies){
     allProxies.push(proxy.name);
   }
+
+  let allSharedFlows=[];
+  let allSharedFlowResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/sharedflows`, options.token, options.serviceAccount);
+  for (const sharedFlow of allSharedFlowResponse.sharedFlows){
+    allSharedFlows.push(sharedFlow.name);
+  }
+
   let envs = [];
   if(options.environment == "all"){
     //Get the list of Environments in the Org
@@ -44,12 +51,25 @@ async function process(options){
         deployedProxies.push(proxy.apiProxy);
       }
     }
-    console.log(`Proxies deployed in ${env}: ${deployedProxies}`);
     debug(`Proxies deployed in ${env}: ${deployedProxies}`);
 
     undeployedProxies = allProxies.filter(proxy => !deployedProxies.includes(proxy));
     debug(`Undeployed proxies in ${env}: ${undeployedProxies}`);
     console.log(`Undeployed proxies in ${env}: ${undeployedProxies}`);
+
+    let deployedSharedFlows = []; undeployedSharedFlows=[];
+    //Get the list of deployed sharedFlows
+    let sharedFlowDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments?sharedFlows=true`,options.token, options.serviceAccount);
+    if(sharedFlowDeployments.deployments){
+      for (const sharedFlow of sharedFlowDeployments.deployments){
+        deployedSharedFlows.push(sharedFlow.apiProxy);
+      }
+    }
+    debug(`SharedFlow deployed in ${env}: ${deployedSharedFlows}`);
+
+    undeployedSharedFlows = allSharedFlows.filter(sf => !deployedSharedFlows.includes(sf));
+    debug(`Undeployed Shared Flows in ${env}: ${undeployedSharedFlows}`);
+    console.log(`Undeployed Shared Flows in ${env}: ${undeployedSharedFlows}`);
     console.log("\n----------------------------------------------------------------------------------------------------------------\n");
   }
 }
