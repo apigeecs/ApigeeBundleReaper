@@ -33,6 +33,7 @@ program.command('findProxiesWithoutTraffic')
     .option("-o, --organization <organization>", "Please provide the Apigee Organization Name")
     .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
     .option("-t, --token <token>", "Please provide the access token")
+    .option("-s, --serviceAccount <serviceAccount>", "Please provide the path to the service account json file")
     .option("-d, --axDays <axDays>", "Please provide the number of days for Traffic", parseInt)
     .addOption(new Option("-u, --undeployUnused <undeployUnused>", "Do you want to undeploy unsed proxies? Y or N").choices(['Y', 'N']).default('N'))
     .action((options) => {
@@ -45,6 +46,7 @@ program.command('findUndeployedProxies')
     .option("-o, --organization <organization>", "Please provide the Apigee Organization Name")
     .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
     .option("-t, --token <token>", "Please provide the access token")
+    .option("-s, --serviceAccount <serviceAccount>", "Please provide the path to the service account json file")
     .action((options) => {
         validate(options, 'findUndeployedProxies');
         findUndeployedProxies.process(options);
@@ -55,6 +57,7 @@ program.command('findDeploymentCount')
     .option("-o, --organization <organization>", "Please provide the Apigee Organization Name")
     .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
     .option("-t, --token <token>", "Please provide the access token")
+    .option("-s, --serviceAccount <serviceAccount>", "Please provide the path to the service account json file")
     .action((options) => {
         validate(options, 'findDeploymentCount');
         findDeploymentCount.process(options);
@@ -66,6 +69,7 @@ program.command('listProxiesWithRevisions')
     .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
     .option("-r, --revisions <revisions>", "Number of revisions to search", parseInt)
     .option("-t, --token <token>", "Please provide the access token")
+    .option("-s, --serviceAccount <serviceAccount>", "Please provide the path to the service account json file")
     .action((options) => {
         validate(options, 'listProxiesWithRevisions');
         listProxiesWithRevisions.process(options);
@@ -83,8 +87,8 @@ function validate(options, command){
         console.log("Please provide the Environment name using the '-e' option");
         flag = false;
     }
-    if(!options.token){
-        console.log("Please provide the access token using the '-t' option");
+    if(!options.serviceAccount && !options.token){
+        console.log("Please provide the path of the service account file using the '-s' option or provide the token using the '-t' option");
         flag = false;
     }
     if(command == 'findProxiesWithoutTraffic' && !options.axDays){

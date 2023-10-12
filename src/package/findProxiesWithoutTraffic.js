@@ -23,7 +23,7 @@ const debug = require("debug")(`findProxiesWithoutTraffic`);
 //   let fromDate = new Date(toDate - (options.axDays*24*3600*1000));
 //   let formattedFromDate = (fromDate.getMonth()+1)+"/"+fromDate.getDate()+"/"+fromDate.getFullYear()+" 00:00";//MM/DD/YYYY HH:MM
   
-//   let response = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/ayostest/stats/apiproxy?select=sum(message_count)&timeUnit=day&timeRange=${formattedFromDate}~${formattedToDate}`, options.token);
+//   let response = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/ayostest/stats/apiproxy?select=sum(message_count)&timeUnit=day&timeRange=${formattedFromDate}~${formattedToDate}`, options.token, options.serviceAccount);
 //   console.log(JSON.stringify(response));
 // }
 
@@ -35,7 +35,7 @@ async function process(options){
   let formattedFromDate = (fromDate.getMonth()+1)+"/"+fromDate.getDate()+"/"+fromDate.getFullYear()+" 00:00";//MM/DD/YYYY HH:MM
   if(options.environment == "all"){
     //Get the list of Environments in the Org
-    envs = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments`,options.token);
+    envs = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments`,options.token, options.serviceAccount);
   }else
     envs = [options.environment];
   debug(`envs: ${envs}`);
@@ -43,7 +43,7 @@ async function process(options){
     let deployedProxies = [], proxiesWithTraffic=[], unUsedProxies=[];
     let undeployProxyMap = new Map(); //map for proxy and revision which will later be used to undeploy
     //Get the list of deployed proxies
-    let proxyDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments`,options.token);
+    let proxyDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments`,options.token, options.serviceAccount);
     if(proxyDeployments.deployments){
       for (const proxy of proxyDeployments.deployments){
         deployedProxies.push(proxy.apiProxy);
@@ -53,7 +53,7 @@ async function process(options){
     debug(`Proxies deployed in ${env}: ${deployedProxies}`);
 
     //Get the Stats for each environment
-    let proxyTraffic = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/stats/apiproxy?select=sum(message_count)&timeUnit=day&timeRange=${formattedFromDate}~${formattedToDate}`, options.token);
+    let proxyTraffic = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/stats/apiproxy?select=sum(message_count)&timeUnit=day&timeRange=${formattedFromDate}~${formattedToDate}`, options.token, options.serviceAccount);
     if(proxyTraffic.environments && proxyTraffic.environments[0] && proxyTraffic.environments[0].dimensions){
       for (const dimension of proxyTraffic.environments[0].dimensions){
         proxiesWithTraffic.push(dimension.name);
@@ -66,7 +66,7 @@ async function process(options){
 
     if(options.undeployUnused == "Y"){
       for (const unUsedProxy of unUsedProxies){
-        utils.callMgmtAPI('delete', `/v1/organizations/${options.organization}/environments/${env}/apis/${unUsedProxy}/revisions/${undeployProxyMap.get(unUsedProxy)}/deployments`, options.token);
+        utils.callMgmtAPI('delete', `/v1/organizations/${options.organization}/environments/${env}/apis/${unUsedProxy}/revisions/${undeployProxyMap.get(unUsedProxy)}/deployments`, options.token, options.serviceAccount);
         console.log(`Undeployed Rev ${undeployProxyMap.get(unUsedProxy)} of ${unUsedProxy} in ${env} environment`);
       }
     }

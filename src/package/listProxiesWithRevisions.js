@@ -18,12 +18,12 @@ const utils = require("../utils/utils");
 const debug = require("debug")(`listProxiesWithRevisions`);
 
 async function test(options){
-  let response = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/sharedflows?includeRevisions=true`, options.token);
+  let response = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/sharedflows?includeRevisions=true`, options.token, options.serviceAccount);
   console.log(JSON.stringify(response));
 }
 
 async function process(options){
-  let allProxiesResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/apis?includeRevisions=true`, options.token);
+  let allProxiesResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/apis?includeRevisions=true`, options.token, options.serviceAccount);
   if(allProxiesResponse.proxies){
     for (const proxy of allProxiesResponse.proxies){
       if(proxy.revision && proxy.revision.length>=options.revisions)
@@ -31,7 +31,7 @@ async function process(options){
     }
   }
   console.log("\n----------------------------------------------------------------------------------------------------------------\n");
-  let allSharedFlowResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/sharedflows?includeRevisions=true`, options.token);
+  let allSharedFlowResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/sharedflows?includeRevisions=true`, options.token, options.serviceAccount);
   if(allSharedFlowResponse.sharedFlows){
     for (const sharedFlow of allSharedFlowResponse.sharedFlows){
       if(sharedFlow.revision && sharedFlow.revision.length>=options.revisions)

@@ -19,7 +19,10 @@ const {GoogleAuth} = require('google-auth-library');
 const debug = require("debug")(`utils`);
 
 //Call Mgmt API
-async function callMgmtAPI(method, path, token) {
+async function callMgmtAPI(method, path, token, serviceAccount) {
+  if(!token){
+    token = await getGoogleAccessToken(serviceAccount);
+  }
   const instance = axios.create({
     method,
     baseURL: "https://apigee.googleapis.com",
@@ -37,13 +40,13 @@ async function callMgmtAPI(method, path, token) {
   }
 }
 
-async function getGoogleAccessToken(){
+async function getGoogleAccessToken(serviceAccount){
+  process.env.GOOGLE_APPLICATION_CREDENTIALS=serviceAccount;
   const auth = new GoogleAuth({scopes: 'https://www.googleapis.com/auth/cloud-platform'}); 
   const token = await auth.getAccessToken();
-  console.log(token);
+  return token;
 }
 
 module.exports = {
-  callMgmtAPI,
-  getGoogleAccessToken
+  callMgmtAPI
 };

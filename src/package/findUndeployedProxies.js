@@ -24,21 +24,21 @@ async function test(options){
 async function process(options){
   //Get the list of all proxies in the org
   let allProxies=[];
-  let allProxiesResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/apis`, options.token);
+  let allProxiesResponse = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/apis`, options.token, options.serviceAccount);
   for (const proxy of allProxiesResponse.proxies){
     allProxies.push(proxy.name);
   }
   let envs = [];
   if(options.environment == "all"){
     //Get the list of Environments in the Org
-    envs = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments`,options.token);
+    envs = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments`,options.token, options.serviceAccount);
   }else
     envs = [options.environment];
   debug(`envs: ${envs}`);
   for (const env of envs){
     let deployedProxies = []; undeployedProxies=[];
     //Get the list of deployed proxies
-    let proxyDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments`,options.token);
+    let proxyDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments`,options.token, options.serviceAccount);
     if(proxyDeployments.deployments){
       for (const proxy of proxyDeployments.deployments){
         deployedProxies.push(proxy.apiProxy);

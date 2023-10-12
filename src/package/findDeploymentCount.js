@@ -23,7 +23,7 @@ const debug = require("debug")(`findDeploymentCount`);
 //   let fromDate = new Date(toDate - (options.axDays*24*3600*1000));
 //   let formattedFromDate = (fromDate.getMonth()+1)+"/"+fromDate.getDate()+"/"+fromDate.getFullYear()+" 00:00";//MM/DD/YYYY HH:MM
   
-//   let response = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/ayostest/stats/apiproxy?select=sum(message_count)&timeUnit=day&timeRange=${formattedFromDate}~${formattedToDate}`, options.token);
+//   let response = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/ayostest/stats/apiproxy?select=sum(message_count)&timeUnit=day&timeRange=${formattedFromDate}~${formattedToDate}`, options.token, options.serviceAccount);
 //   console.log(JSON.stringify(response));
 // }
 
@@ -31,21 +31,21 @@ async function process(options){
   let envs = [];
   if(options.environment == "all"){
     //Get the list of Environments in the Org
-    envs = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments`,options.token);
+    envs = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments`,options.token, options.serviceAccount);
   }else
     envs = [options.environment];
   debug(`envs: ${envs}`);
   for (const env of envs){
     let deployedProxies = [], deployedSharedFlows = [];
     //Get the list of deployed proxies
-    let proxyDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments?sharedFlows=false`,options.token);
+    let proxyDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments?sharedFlows=false`,options.token, options.serviceAccount);
     if(proxyDeployments.deployments){
       for (const proxy of proxyDeployments.deployments){
         deployedProxies.push(proxy.apiProxy);
       }
     }
     //Get the list of deployed sharedFlows
-    let shardFlowDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments?sharedFlows=true`,options.token);
+    let shardFlowDeployments = await utils.callMgmtAPI('get', `/v1/organizations/${options.organization}/environments/${env}/deployments?sharedFlows=true`,options.token, options.serviceAccount);
     if(shardFlowDeployments.deployments){
       for (const sharedFlow of shardFlowDeployments.deployments){
         deployedSharedFlows.push(sharedFlow.apiProxy);
