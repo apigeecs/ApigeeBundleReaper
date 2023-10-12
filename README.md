@@ -36,6 +36,7 @@ This will install the tool as a binary
 bundle-reaper --help
 bundle-reaper findProxiesWithoutTraffic --help
 bundle-reaper findUndeployedProxies --help
+bundle-reaper findDeploymentCount --help
 ```	
 
 ### findProxiesWithoutTraffic
@@ -53,4 +54,12 @@ To find the proxies that are not deployed to an Apige environment
 ```sh
 TOKEN=$(gcloud auth print-access-token)
 bundle-reaper findUndeployedProxies -o {org} -t $TOKEN 
+```
+
+### findDeploymentCount
+To find the number of proxies/sharedflows deployed in an Apigee environment
+
+```sh
+TOKEN=$(gcloud auth print-access-token)
+bundle-reaper findDeploymentCount -o {org} -t $TOKEN 
 ```

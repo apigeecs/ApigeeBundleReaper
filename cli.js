@@ -19,7 +19,8 @@ const { Command } = require('commander');
       Option = require('commander').Option,
       pkj = require('./package.json'),
       findProxiesWithoutTraffic = require("./src/package/findProxiesWithoutTraffic"),
-      findUndeployedProxies = require("./src/package/findUndeployedProxies");
+      findUndeployedProxies = require("./src/package/findUndeployedProxies"),
+      findDeploymentCount = require("./src/package/findDeploymentCount");
 
 program
     .name('bundle-reaper')
@@ -47,6 +48,17 @@ program.command('findUndeployedProxies')
     .action((options) => {
         validate(options, 'findUndeployedProxies');
         findUndeployedProxies.process(options);
+    });
+
+program.command('findDeploymentCount')
+    .description('To find the number of proxies/sharedflows deployed in an Apigee environment')
+    .option("-o, --organization <organization>", "Please provide the Apigee Organization Name")
+    .addOption(new Option("-e, --environment <environment>", "Please provide a specific Environment name").default('all'))
+    .option("-t, --token <token>", "Please provide the access token")
+    //.addOption(new Option("-x, --deleteUndeployed <deleteUndeployed>", "Do you want to delete the undeployed proxies? Y or N").choices(['Y', 'N']).default('N'))
+    .action((options) => {
+        validate(options, 'findDeploymentCount');
+        findDeploymentCount.process(options);
     });
 
 program.parse(process.argv);
